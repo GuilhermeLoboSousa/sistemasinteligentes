@@ -106,4 +106,3 @@ class Dataset:
                   }
 
             return pd.DataFrame.from_dict(data, orient="index", columns=self.features)
-        pass

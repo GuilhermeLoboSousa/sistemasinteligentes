@@ -1,6 +1,6 @@
 import pandas as pd
 
-from si.data.dataset import Dataset
+from src.si.data.dataset import Dataset
 
 def read_csv (filename:str, sep:str=",", features:bool=None, label:bool=None ):
     """
@@ -38,3 +38,24 @@ def read_csv (filename:str, sep:str=",", features:bool=None, label:bool=None ):
         label = None    
 
     return Dataset(X,y,features=features, label=label) #vai buscar a classe já criada, o que tivemos aqui a fazer foi preparar para ler o ficheiro consoante certas condições explicitas anteriormente
+
+def write_csv (filename:str,dataset:Dataset, sep:str=",", features:bool=None, label:bool=None ):
+    """
+    allow to transform Dataset object into a csv file
+    
+    Arguments
+    --------------
+    filename: the path tho the file
+    sep: separator used in the file (most comumn is , or ;) 
+    features: if the file has a header- default is false
+    label: if the file has a label y- default is false
+    """
+    data=pd.DataFrame(dataset.X) # ir buscar a nossa matrix X como data
+
+    if features is not None:
+        data.columns=dataset.features # nome das colunas vvai ser obviamente o nome das features (que é uma lista de str)
+    
+    if label is not None:
+        data[dataset.label]=dataset.y # valores da variável dataset.y para uma coluna específica do DataFrame queé a coluna da label
+    
+    data.to_csv(filename,sep, index=False) # sem retorno especifico apenas a fazer o que é pedido
