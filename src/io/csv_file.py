@@ -58,4 +58,4 @@ def write_csv (filename:str,dataset:Dataset, sep:str=",", features:bool=None, la
     if label is not None:
         data[dataset.label]=dataset.y # valores da variável dataset.y para uma coluna específica do DataFrame queé a coluna da label
     
-    data.to_csv(filename,sep, index=False) # sem retorno especifico apenas a fazer o que é pedido
+    data.to_csv(filename,sep=",", index=False) # sem retorno especifico apenas a fazer o que é pedido
