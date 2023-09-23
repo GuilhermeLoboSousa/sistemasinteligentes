@@ -94,7 +94,7 @@ class Dataset:
             """
             return np.nanmin(self.X,axis=0)
 
-        def summary(self) -> pd.Dataframe:
+        def summary(self) -> pd.DataFrame:
             """
             return a summary of the dataset with the functions create before
             """
