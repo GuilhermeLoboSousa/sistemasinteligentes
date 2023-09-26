@@ -1,7 +1,7 @@
 import sys
-sys.path.append("C:\\Users\\guilh\\OneDrive\\Documentos\\GitHub")
+sys.path.append("C:\\Users\\guilh\\OneDrive\\Documentos\\GitHub\\SISTEMASINTELIGENTES\\src\\si\\data")
 import numpy as np
-from src.si.data.dataset import Dataset
+from ..data.dataset import Dataset
 
 class VarianceThreshold:
     """
