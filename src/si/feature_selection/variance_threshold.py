@@ -1,5 +1,5 @@
 import sys
-sys.path.append("C:\\Users\\guilh\\OneDrive\\Documentos\\GitHub\\sistemasinteligentes")
+sys.path.append("C:\\Users\\guilh\\OneDrive\\Documentos\\GitHub")
 import numpy as np
 from src.si.data.dataset import Dataset
 
