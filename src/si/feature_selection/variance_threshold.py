@@ -1,5 +1,7 @@
+
 import sys
-sys.path.append("C:\\Users\\guilh\\OneDrive\\Documentos\\GitHub\\SISTEMASINTELIGENTES\\src\\si\\data")
+sys.path.append("C:\\Users\\guilh\\OneDrive\\Documentos\\GitHub\\sistemasinteligentes")
+
 import numpy as np
 from src.si.data.dataset import Dataset
 
@@ -58,7 +60,7 @@ class VarianceThreshold:
 
 #testing
 if __name__ == '__main__':
-    from si.data.dataset import Dataset
+    from src.si.data.dataset import Dataset
 
     dataset = Dataset(X=np.array([[0, 2, 0, 3],
                                   [0, 1, 4, 3],

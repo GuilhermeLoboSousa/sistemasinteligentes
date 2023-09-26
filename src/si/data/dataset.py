@@ -43,107 +43,107 @@ class Dataset:
         self.features=features
         self.label=label
 
-        def shape (self) -> tuple[int,int]:
-            """
-            the result would be  a tupple with the numer of lines/samples/subjects and collumns/features
-            """
-            return self.X.shape
+    def shape (self) -> tuple[int,int]:
+        """
+        the result would be  a tupple with the numer of lines/samples/subjects and collumns/features
+        """
+        return self.X.shape
+    
+    def has_label (self) -> bool:
+        """
+        we want to see if exist a label y
+        """
+        return False if self.y is None else True
+    
+    def get_classes (self) -> np.ndarray:
+        """
+        return the class of the dataset, this is, the possivel values of label y
+        """
+        if self.has_label() is True:
+            return np.unique(self.y)
+        else:
+            raise ValueError("we dont have the label y")
         
-        def has_label (self) -> bool:
-            """
-            we want to see if exist a label y
-            """
-            return False if self.y is None else True
-        
-        def get_classes (self) -> np.ndarray:
-            """
-            return the class of the dataset, this is, the possivel values of label y
-            """
-            if self.has_label() is True:
-                return np.unique(self.y)
-            else:
-                raise ValueError("we dont have the label y")
+    def get_mean(self) -> np.ndarray:
+        """
+        return the mean of each collumn /feature 
+        """
+        return np.nanmean(self.X, axis=0) #o eixo que estamos a prender
+    
+    def get_variance(self) -> np.ndarray:
+        """
+        return the variance of each collumn/feature
+        """
+        return np.nanvar(self.X,axis=0) #nan tem em conta já os valores nao definidos
+    
+    def get_median(self) -> np.ndarray:
+        """
+        return the median of each collumn/feature
+        """
+        return np.nanmedian(self.X,axis=0) 
+
+    def get_max(self) -> np.ndarray:
+        """
+        return the maximum value of each collumn/feature
+        """
+        return np.nanmax(self.X,axis=0) 
+
+    def get_min(self) -> np.ndarray:
+        """
+        return the minimum value of each collumn/feature
+        """
+        return np.nanmin(self.X,axis=0)
+
+    def summary(self) -> pd.DataFrame:
+        """
+        return a summary of the dataset with the functions create before
+        """
+        data={"mean": self.get_mean(),
+                "variance": self.get_variance(),
+                "median": self.get_median(),
+                "max": self.get_max(),
+                "min":self.get_min()
+                }
+
+        return pd.DataFrame.from_dict(data, orient="index", columns=self.features)
+    
+    def dropna(self) -> np.ndarray:
+        """
+        this fuction allow to remove the lines that have nan values and behind that give return the index of this lines
+        """
+        without_na=np.isnan(self.X).any(axis=1)
+        self.X=self.X[~without_na]
+        self.y=self.y[~without_na]
+        indice=np.where(without_na)
+        return indice
+    
+    def fill_na(self, strategy:str=None):
+        """
+        this function allow replace de null values by the :
+        first option: a value random choose betwween the min and max value of the column with nan values
+        second: the median value of the column
+        third: the mean value of the collumn
+        Arguments
+        -------
+        strategy: we can choose if want to replace by the min or max, median or mean
+        """
+        if strategy is None:
+            raise ValueError("please, put the value or mean or median")
+        columns_true=np.isnan(self.X).any(axis=0) #ter bool onde true significa que tem um valor nulo
+        nan_columns_indices = np.where(columns_true)[0] # vou buscar os indices onde existem os bool true
+
+        for col_index in nan_columns_indices:
+            col = self.X[:, col_index]#guardar as colunas que tem valores nulos
             
-        def get_mean(self) -> np.ndarray:
-            """
-            return the mean of each collumn /feature 
-            """
-            return np.nanmean(self.X, axis=0) #o eixo que estamos a prender
-        
-        def get_variance(self) -> np.ndarray:
-            """
-            return the variance of each collumn/feature
-            """
-            return np.nanvar(self.X,axis=0) #nan tem em conta já os valores nao definidos
-        
-        def get_median(self) -> np.ndarray:
-            """
-            return the median of each collumn/feature
-            """
-            return np.nanmedian(self.X,axis=0) 
+            if strategy == "value": #opto por escolher entro o maximo e o minimo
+                min_value = np.nanmin(col)#perguntar ao prof se posso usar a função get minimu
+                max_value = np.nanmax(col)
+                final = np.random.uniform(min_value, max_value) #algo aleatorio entre o minimo e o maximo
+            elif strategy == "median":
+                final = np.nanmedian(col)
+            elif strategy == "mean":
+                final = np.nanmean(col)
+            
+            col[np.isnan(col)] = final # vou buscar os valores nan como true e depois , é basicamente col[onde é true?] e substituir pelo que quero
 
-        def get_max(self) -> np.ndarray:
-            """
-            return the maximum value of each collumn/feature
-            """
-            return np.nanmax(self.X,axis=0) 
-
-        def get_min(self) -> np.ndarray:
-            """
-            return the minimum value of each collumn/feature
-            """
-            return np.nanmin(self.X,axis=0)
-
-        def summary(self) -> pd.DataFrame:
-            """
-            return a summary of the dataset with the functions create before
-            """
-            data={"mean": self.get_mean(),
-                  "variance": self.get_variance(),
-                  "median": self.get_median(),
-                  "max": self.get_max(),
-                  "min":self.get_min()
-                  }
-
-            return pd.DataFrame.from_dict(data, orient="index", columns=self.features)
-        
-        def dropna(self) -> np.ndarray:
-            """
-            this fuction allow to remove the lines that have nan values and behind that give return the index of this lines
-            """
-            without_na=np.isnan(self.X).any(axis=1)
-            self.X=self.X[~without_na]
-            self.y=self.y[~without_na]
-            indice=np.where(without_na)
-            return indice
-        
-        def fill_na(self, strategy:str=None):
-            """
-            this function allow replace de null values by the :
-            first option: a value random choose betwween the min and max value of the column with nan values
-            second: the median value of the column
-            third: the mean value of the collumn
-            Arguments
-            -------
-            strategy: we can choose if want to replace by the min or max, median or mean
-            """
-            if strategy is None:
-                raise ValueError("please, put the value or mean or median")
-            columns_true=np.isnan(self.X).any(axis=0) #ter bool onde true significa que tem um valor nulo
-            nan_columns_indices = np.where(columns_true)[0] # vou buscar os indices onde existem os bool true
-
-            for col_index in nan_columns_indices:
-                col = self.X[:, col_index]#guardar as colunas que tem valores nulos
-                
-                if strategy == "value": #opto por escolher entro o maximo e o minimo
-                    min_value = np.nanmin(col)#perguntar ao prof se posso usar a função get minimu
-                    max_value = np.nanmax(col)
-                    final = np.random.uniform(min_value, max_value) #algo aleatorio entre o minimo e o maximo
-                elif strategy == "median":
-                    final = np.nanmedian(col)
-                elif strategy == "mean":
-                    final = np.nanmean(col)
-                
-                col[np.isnan(col)] = final # vou buscar os valores nan como true e depois , é basicamente col[onde é true?] e substituir pelo que quero
-
-            return 
+        return 
