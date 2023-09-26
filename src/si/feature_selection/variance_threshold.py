@@ -18,14 +18,14 @@ class VarianceThreshold:
     ------------------
     Variance: the varaince of each featue estimated from data
     """
-    def __init__(self, threslhold:float=0.0):
+    def __init__(self, threshold:float=0.0):
         """
         same logic explain before
         """
-        if threslhold < 0:
+        if threshold < 0:
             raise ValueError("the threshold must be a positive value")
         
-        self.threshold=threslhold #parameters
+        self.threshold=threshold #parameters
 
         self.variance=None #estimated parameters
     
@@ -73,6 +73,13 @@ if __name__ == '__main__':
     selector = selector.fit(dataset)
     dataset = selector.transform(dataset)
     print(dataset.features)
+
+    thresholds = [0.1, 0.5, 1.0,-0.4]
+    for threshold in thresholds:
+        selector = VarianceThreshold(threshold=threshold)
+        selector = selector.fit(dataset)
+        dataset_filtered = selector.transform(dataset)
+        print(f"Features for threshold {threshold}: {dataset_filtered.features}")
 
 
 
