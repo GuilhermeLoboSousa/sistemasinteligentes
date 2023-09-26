@@ -1,9 +1,12 @@
+import sys
+sys.path.append("C:\\Users\\guilh\\OneDrive\\Documentos\\GitHub\\sistemasinteligentes")
+
 from typing import Tuple, Union
 
 import numpy as np
 from scipy import stats
 
-from si.data.dataset import Dataset
+from src.si.data.dataset import Dataset
 
 def f_classification(dataset:Dataset) -> Union[Tuple[np.ndarray,np.ndarray], Tuple[float,float]]:
     """
@@ -25,3 +28,26 @@ def f_classification(dataset:Dataset) -> Union[Tuple[np.ndarray,np.ndarray], Tup
     groups=[dataset.X[dataset.y==c,:] for c in classes] # associar cada samples a uma determinado classe e assim obtenho os meus grupos
     F,p=stats.f_oneway(*groups) #fazer a anova
     return F,p
+
+
+#TESTAR
+
+#testing
+if __name__ == '__main__':
+    from src.si.data.dataset import Dataset
+
+    dataset = Dataset(X=np.array([[3, 2, 0, 3],
+                                  [0, 1, 4, 5],
+                                  [0, 1, 1, 2]]),
+                      y=np.array([0, 1, 0]),
+                      features=["f1", "f2", "f3", "f4"],
+                      label="y")
+
+
+
+    # Chamar a função f_classification para calcular F-score e p-score
+    F_score, p_score = f_classification(dataset)
+
+    # Imprimir os resultados
+    print("F-score:", F_score)
+    print("p-score:", p_score)
