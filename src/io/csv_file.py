@@ -2,7 +2,7 @@ import pandas as pd
 
 from src.si.data.dataset import Dataset
 
-def read_csv (filename:str, sep:str=",", features:bool=None, label:bool=None ):
+def read_csv (filename:str, sep:str=",", features:bool=None, label:bool=None )->Dataset:
     """
     allow to read a csc file into a Dataset object
     

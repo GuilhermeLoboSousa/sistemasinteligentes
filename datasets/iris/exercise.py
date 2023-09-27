@@ -1,3 +1,5 @@
+import sys
+sys.path.append("C:\\Users\\guilh\\OneDrive\\Documentos\\GitHub\\sistemasinteligentes")
 import numpy as np
 import pandas as pd
 from src.si.data.dataset import Dataset
@@ -11,7 +13,8 @@ dataset=read_csv(filename, sep=",")
 
 #2
 penultimo=dataset.X[:,-2]
-penultimo.columns
+nomes_colunas = dataset.dataframe.columns
+nomes_colunas
 dataset.features[-2] #esta a ir buscar um nome aleatorio deveria de ir buscar petal_width
 penultimo.shape
 
@@ -39,6 +42,7 @@ dataset.X
 novo=dataset.X[:,-1]
 np.sum(novo=="Iris-setosa")
 
-#exercicio 2
+#exercicio aula 22
 
 #A
+dataset
