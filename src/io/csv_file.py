@@ -14,7 +14,7 @@ def read_csv (filename:str, sep:str=",", features:bool=None, label:bool=None )->
     label: if the file has a label y- default is false
     """
     data=pd.read_csv(filename,sep=sep)
-    if features is not None and label is not None:
+    if features and label:
         features=data.columns[:-1] # nome de todas as coluans menos a ultim
         label=data.columns[-1] # nome da coluna label
         X=data.iloc[:,:-1].to_numpy() #todas as linhas e todas as colunas menos a ultima
