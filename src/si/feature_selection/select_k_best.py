@@ -5,8 +5,8 @@ from typing import Callable
 
 import numpy as np
 
-from si.data.dataset import Dataset
-from si.statistics.f_classification import f_classification
+from src.si.data.dataset import Dataset
+from src.si.statistics.f_classification import f_classification
 
 class SelectKBest:
     """
@@ -36,6 +36,8 @@ class SelectKBest:
         self.score_func=score_func
         self.F=None
         self.p=None
+        if self.K > len(dataset.features):
+            raise ValueError(f"k ({self.K}) cannot be greater than the number of available features ({len(dataset.features)}).")
     
     def fit (self, dataset:Dataset) -> "SelectKBest":
         """
@@ -59,9 +61,11 @@ class SelectKBest:
         Returns:
         the select (filtered) dataset
         """
-        top_10=np.argsort(self.F)[-self.K:] # ordena os valores de F de forma CRESCENTE e seleciona os 10 ultimos neste caso, que sao os top_10
-        features=np.array(dataset.features)[top_10] #apenas fico com as features do top 10
-        return Dataset(X=dataset.X[:,top_10], y=dataset.y, features=features, label=dataset.label) #faço aqui a filtragem do dataset X-todas as linhas , mas apenas as 10 melhores colunas
+        top_10=np.argsort(self.F)[:self.K] # ordena os valores de F de forma CRESCENTE e seleciona os 10 ultimos neste caso, que sao os top_10
+        print(self.F,"score")
+        features=np.array(dataset.features)[-top_10] #apenas fico com as features do top 10
+        print(top_10,"11")
+        return Dataset(X=dataset.X[:,-top_10], y=dataset.y, features=features, label=dataset.label) #faço aqui a filtragem do dataset X-todas as linhas , mas apenas as 10 melhores colunas
     
     def fit_transform(self,dataset:Dataset): #basicamente este junta as duas funções
         """
@@ -81,13 +85,13 @@ if __name__ == '__main__':
 
     dataset = Dataset(X=np.array([[0.2, 2, 0.06, 2.87],
                                   [0.5, 1.5, 4, 3],
-                                  [0.3, 1, 1, 3.4]]),
+                                  [0.3, 1.1, 1, 3.4]]),
                       y=np.array([0, 1, 0]),
                       features=["f1", "f2", "f3", "f4"],
                       label="y")
 
 
-    ks = [1,2,3]
+    ks = [1,2,4,3,5]
     for k in ks:
         selector = SelectKBest(k=k)
         selector = selector.fit(dataset)
@@ -95,5 +99,5 @@ if __name__ == '__main__':
         print(f"Features for k {k}: {dataset_filtered.features}")
 
 
-
+#maior valor de F maior diferença significativa entre os valores dos dados
 
