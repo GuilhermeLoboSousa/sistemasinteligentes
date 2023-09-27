@@ -21,8 +21,8 @@ class Dataset:
         """
         if X is None:
             raise ValueError ("must exist a matrix X")
-        if X is not None and label is None:
-            label="y_empty"
+        #if X is not None and label is None:
+            #label="y_empty"
         if y is not None and len(X) != len(y):
             raise ValueError("x e y must have the same number of lines")
         if features is not None and X.shape[1] != len(features):

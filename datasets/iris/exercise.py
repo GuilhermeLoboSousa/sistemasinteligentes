@@ -5,16 +5,17 @@ import pandas as pd
 from src.si.data.dataset import Dataset
 from src.io.csv_file import read_csv, write_csv 
 from src.io.data_file import *
+from src.si.statistics.f_classification import f_classification
+from src.si.feature_selection.percentile import Percentile
 
 filename = r"C:\Users\guilh\OneDrive\Documentos\GitHub\sistemasinteligentes\datasets\iris\iris.csv"
 
 #1
 dataset=read_csv(filename, sep=",")
+dataset
 
 #2
 penultimo=dataset.X[:,-2]
-nomes_colunas = dataset.dataframe.columns
-nomes_colunas
 dataset.features[-2] #esta a ir buscar um nome aleatorio deveria de ir buscar petal_width
 penultimo.shape
 
@@ -44,5 +45,11 @@ np.sum(novo=="Iris-setosa")
 
 #exercicio aula 22
 
-#A
-dataset
+
+iris=read_csv(filename, sep=",")
+print(dataset.label)
+#percentile_selector = Percentile(score_func=f_classification, percentile=25)  
+#percentile_selector.fit(dataset)
+#dataset_filtered = percentile_selector.transform(dataset)
+#print("Features after percentile selection:")
+#print(dataset_filtered.features)
