@@ -20,12 +20,12 @@ def read_csv (filename:str, sep:str=",", features:bool=None, label:bool=None )->
         X=data.iloc[:,:-1].to_numpy() #todas as linhas e todas as colunas menos a ultima
         y=data.iloc[:,-1].to_numpy() #todas as linhas apenas da ultima coluna
 
-    elif features is not None and label is None:
+    elif features and not label:
         features=data.columns
         X=data.to_numpy()
         y=None
 
-    elif features is None and label is not None:
+    elif not features and label:
         features=None
         label=data.columns[-1] #eu penso que o mais correto seria isto pq eu sei que a ultima vai ser a label y- perguntar ao prof 
         X=data.iloc[:,:-1].to_numpy()
