@@ -47,10 +47,8 @@ np.sum(novo=="Iris-setosa")
 
 
 iris=read_csv(filename, sep=",",features=True,label=True)
-labels = dataset.label
-print(labels)
-#percentile_selector = Percentile(score_func=f_classification, percentile=25)  
-#percentile_selector.fit(dataset)
-#dataset_filtered = percentile_selector.transform(dataset)
-#print("Features after percentile selection:")
-#print(dataset_filtered.features)
+percentile_selector = Percentile(score_func=f_classification, percentile=50)  
+percentile_selector.fit(iris)
+dataset_filtered = percentile_selector.transform(iris)
+print("Features after percentile selection:")
+print(dataset_filtered.features)

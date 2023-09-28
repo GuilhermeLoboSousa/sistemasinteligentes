@@ -1,3 +1,5 @@
+import sys
+sys.path.append("C:\\Users\\guilh\\OneDrive\\Documentos\\GitHub\\sistemasinteligentes")
 import pandas as pd
 
 from src.si.data.dataset import Dataset
@@ -59,3 +61,4 @@ def write_csv (filename:str,dataset:Dataset, sep:str=",", features:bool=None, la
         data[dataset.label]=dataset.y # valores da variável dataset.y para uma coluna específica do DataFrame queé a coluna da label
     
     data.to_csv(filename,sep=",", index=False) # sem retorno especifico apenas a fazer o que é pedido
+
