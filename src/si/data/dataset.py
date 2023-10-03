@@ -115,7 +115,7 @@ class Dataset:
         self.X=self.X[~without_na]
         self.y=self.y[~without_na]
         indice=np.where(without_na)
-        return indice
+        return self,indice
     
     def fill_na(self, strategy:str=None):
         """
@@ -129,11 +129,12 @@ class Dataset:
         """
         if strategy is None:
             raise ValueError("please, put the value or mean or median")
-        columns_true=np.isnan(self.X).any(axis=0) #ter bool onde true significa que tem um valor nulo
-        nan_columns_indices = np.where(columns_true)[0] # vou buscar os indices onde existem os bool true
+        columns_true=np.isnan(self.X).any(axis=0) #ter bool onde true significa que tem um valor nulo, dá lista de colunas com true ou false consoante tem ou nao valores nulos
+        nan_columns_indices = np.where(columns_true)[0] # vou buscar os indices onde existem os bool a true
+        
 
         for col_index in nan_columns_indices:
-            col = self.X[:, col_index]#guardar as colunas que tem valores nulos
+            col = self.X[:, col_index]#guardar as colunas que tem valores nulos, ou seja vai buscar a coluna com valores nulos
             
             if strategy == "value": #opto por escolher entro o maximo e o minimo
                 min_value = np.nanmin(col)#perguntar ao prof se posso usar a função get minimu
@@ -144,6 +145,62 @@ class Dataset:
             elif strategy == "mean":
                 final = np.nanmean(col)
             
-            col[np.isnan(col)] = final # vou buscar os valores nan como true e depois , é basicamente col[onde é true?] e substituir pelo que quero
+            col[np.isnan(col)] = final # vou buscar os valores nan como true(dentro da coluna já identificada como ter esses valores) e depois , é basicamente col[onde é true?] e substituir pelo que quero
 
-        return 
+        return self
+    
+
+    def remove_by_index (self,index:int=None):
+        """
+    Remove a line from the dataset by the given index.
+
+    Arguments:
+    ----------
+    index: int
+        The index of the line to be removed.
+        """
+        if not isinstance(index, int):
+            raise ValueError("Please provide a valid integer index.")
+        
+        if index <0 and index> self.X.shape[0]:
+            raise ValueError("Put a valid index")
+        
+        self.X = np.delete(self.X, index, axis=0) #remover algo do eixo linhas do dataset X e esse algo é a posição index
+        if self.y is not None:#caso exista y vou quere apagar tb o seu index
+            self.y = np.delete(self.y, index)
+        return self
+
+
+    
+
+
+
+#testar
+# Dados de exemplo
+X = np.array([[1, 2, 3],
+              [4, 5, np.nan],
+              [7, np.nan, 9]])
+y = np.array([0, 1, 0])
+features = ['feature_1', 'feature_2', 'feature_3']
+label = 'target'
+
+dataset = Dataset(X, y, features, label)
+print("Shape:", dataset.shape())  # Deve retornar (3, 3)
+print("Has Label:", dataset.has_label())  # Deve retornar True
+print("Classes:", dataset.get_classes())  # Deve retornar [0 1]
+print("Mean:", dataset.get_mean())  # Deve retornar [4. 5. 6.]
+print("Variance:", dataset.get_variance())  
+print("Median:", dataset.get_median())  # Deve retornar [4. 5. 6.]
+print("Max:", dataset.get_max())  # Deve retornar [7. 8. 9.]
+print("Min:", dataset.get_min())  # Deve retornar [1. 2. 3.]
+summary_df = dataset.summary()
+print("Summary:")
+print(summary_df)
+#removed_indices = dataset.dropna()
+#print("dataset,Indices removidos:", removed_indices)  # Deve retornar os índices das linhas com valores NaN
+#print("Shape após a remoção de NaNs:", dataset.shape())  # Deve retornar a nova forma após a remoção
+strategy = "value"
+dataset_filled_value = dataset.fill_na(strategy)
+print(dataset_filled_value.X)
+print(dataset.remove_by_index(0))
+print(dataset.X,dataset.y)

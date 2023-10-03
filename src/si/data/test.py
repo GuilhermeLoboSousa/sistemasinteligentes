@@ -1,7 +1,10 @@
 import numpy as np
 
-X=[8.33333333e+00, 4.11522634e-03, 1.81694583e+01, 8.65076540e-02]
-top_50=np.percentile(X,75)
-indices = np.where(X <= top_50)[0]
+X = np.array([[1, 2],
+              [4, 5],
+              [7, 1]])
+y = np.array([0, 1, 0])
+features = ['feature_1', 'feature_2', 'feature_3']
+label = 'target'
 
-print(top_50,indices)
+print(X.shape[0])
