@@ -10,7 +10,7 @@ from src.si.statistics.f_classification import f_classification
 
 class SelectKBest:
     """
-    select features according to the k highest score(some statistic function)
+    select features according to the k highest score(some statistic function) and the return can be the best feature and the data sorted by the best feature
     Feature ranking is performed by computing the scores of each feature using a scoring function(statistic):
         - f_classification: ANOVA F-value between label/feature for classification tasks.
         - f_regression: F-value obtained from F-value of r's pearson correlation coefficients for regression tasks another statis test not implemented yet).
@@ -61,10 +61,9 @@ class SelectKBest:
         Returns:
         the select (filtered) dataset
         """
-        top_10=np.argsort(self.F)[-self.K:] # ordena os valores de F de forma CRESCENTE e seleciona os 10 ultimos neste caso, que sao os top_10
+        top_10=np.argsort(self.F)[-self.K:][::-1] # ordena os valores de F de forma CRESCENTE e seleciona os 10 ultimos neste caso, que sao os top_10
         print(top_10,"score")
-        features=np.array(dataset.features)[-top_10] #apenas fico com as features do top 10
-        print(features,"11")
+        features=np.array(dataset.features)[top_10] #apenas fico com as features do top 10
         return Dataset(X=dataset.X[:,top_10], y=dataset.y, features=features, label=dataset.label) #faço aqui a filtragem do dataset X-todas as linhas , mas apenas as 10 melhores colunas
     
     def fit_transform(self,dataset:Dataset): #basicamente este junta as duas funções
@@ -91,12 +90,13 @@ if __name__ == '__main__':
                       label="y")
 
 
-    ks = [1,2,4,3]
+    ks = [3,1,4]
     for k in ks:
         selector = SelectKBest(k=k)
         selector = selector.fit(dataset)
         dataset_filtered = selector.transform(dataset)
         print(f"Features for k {k}: {dataset_filtered.features}")
+        print(dataset_filtered.X)
 
 
 #maior valor de F maior diferença significativa entre os valores dos dados
