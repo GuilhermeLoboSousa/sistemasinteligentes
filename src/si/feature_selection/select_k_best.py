@@ -61,11 +61,11 @@ class SelectKBest:
         Returns:
         the select (filtered) dataset
         """
-        top_10=np.argsort(self.F)[:self.K] # ordena os valores de F de forma CRESCENTE e seleciona os 10 ultimos neste caso, que sao os top_10
-        print(self.F,"score")
+        top_10=np.argsort(self.F)[-self.K:] # ordena os valores de F de forma CRESCENTE e seleciona os 10 ultimos neste caso, que sao os top_10
+        print(top_10,"score")
         features=np.array(dataset.features)[-top_10] #apenas fico com as features do top 10
-        print(top_10,"11")
-        return Dataset(X=dataset.X[:,-top_10], y=dataset.y, features=features, label=dataset.label) #faço aqui a filtragem do dataset X-todas as linhas , mas apenas as 10 melhores colunas
+        print(features,"11")
+        return Dataset(X=dataset.X[:,top_10], y=dataset.y, features=features, label=dataset.label) #faço aqui a filtragem do dataset X-todas as linhas , mas apenas as 10 melhores colunas
     
     def fit_transform(self,dataset:Dataset): #basicamente este junta as duas funções
         """
@@ -91,7 +91,7 @@ if __name__ == '__main__':
                       label="y")
 
 
-    ks = [1,2,4,3,5]
+    ks = [1,2,4,3]
     for k in ks:
         selector = SelectKBest(k=k)
         selector = selector.fit(dataset)
