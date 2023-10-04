@@ -43,8 +43,6 @@ total=np.sum(novo!="Iris-setosa")
 print(total)
 
 #exercicio aula 2
-
-
 iris=read_csv(filename, sep=",",features=True,label=True)
 percentile_selector = Percentile(score_func=f_classification, percentile=25)  
 percentile_selector.fit(iris)
