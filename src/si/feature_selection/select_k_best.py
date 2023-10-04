@@ -4,6 +4,8 @@ sys.path.append("C:\\Users\\guilh\\OneDrive\\Documentos\\GitHub\\sistemasintelig
 from typing import Callable
 
 import numpy as np
+import warnings
+
 
 from src.si.data.dataset import Dataset
 from src.si.statistics.f_classification import f_classification
@@ -38,6 +40,8 @@ class SelectKBest:
         self.p=None
         if self.K > len(dataset.features):
             raise ValueError(f"k ({self.K}) cannot be greater than the number of available features ({len(dataset.features)}).")
+        if np.isnan(dataset.X).any():
+            warnings.warn("Caution: The dataset contains NaN values which can lead to incorrect results when computing statistics.You must use some other metodos first like dropna or filna")
     
     def fit (self, dataset:Dataset) -> "SelectKBest":
         """
@@ -82,7 +86,7 @@ class SelectKBest:
 if __name__ == '__main__':
     from src.si.data.dataset import Dataset
 
-    dataset = Dataset(X=np.array([[0.2, 2, 0.06, 2.87],
+    dataset = Dataset(X=np.array([[0.2, np.nan, 0.06, 2.87],
                                   [0.5, 1.5, 4, 3],
                                   [0.3, 1.1, 1, 3.4]]),
                       y=np.array([0, 1, 0]),
