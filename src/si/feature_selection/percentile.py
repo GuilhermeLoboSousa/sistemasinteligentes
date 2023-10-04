@@ -35,8 +35,6 @@ class Percentile:
 
         if self.percentile > 100 or self.percentile < 0:
             raise ValueError("the value of percentile must be between 0 and 100")
-        if np.isnan(dataset.X).any():
-            warnings.warn("Caution: The dataset contains NaN values which can lead to incorrect results when computing statistics.You must use some other metodos first like dropna or filna")
 
     def fit (self,dataset:Dataset) -> "percentile":
         """
@@ -48,7 +46,9 @@ class Percentile:
 
         Return---
         itself
-        """        
+        """
+        if np.isnan(dataset.X).any():
+            warnings.warn("Caution: The dataset contains NaN values which can lead to incorrect results when computing statistics. You may want to use some preprocessing methods like dropna or fillna.")        
         self.F, self.p = self.score_func(dataset)
         return self
 
