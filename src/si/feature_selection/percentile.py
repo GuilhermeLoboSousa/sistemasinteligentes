@@ -4,6 +4,7 @@ sys.path.append("C:\\Users\\guilh\\OneDrive\\Documentos\\GitHub\\sistemasintelig
 from typing import Callable
 
 import numpy as np
+import warnings
 
 from src.si.data.dataset import Dataset
 from src.si.statistics.f_classification import f_classification
@@ -34,6 +35,8 @@ class Percentile:
 
         if self.percentile > 100 or self.percentile < 0:
             raise ValueError("the value of percentile must be between 0 and 100")
+        if np.isnan(dataset.X).any():
+            warnings.warn("Caution: The dataset contains NaN values which can lead to incorrect results when computing statistics.You must use some other metodos first like dropna or filna")
 
     def fit (self,dataset:Dataset) -> "percentile":
         """
@@ -60,7 +63,7 @@ class Percentile:
         top_50=np.percentile(self.F,self.percentile) #nao preciso de ordenar primeiro os valores, para calcular o percentile a ordem nao importa(ja testei isso)
         indices = np.where(self.F <= top_50)[0] # indices vai dizer a posição dos valores de F que têm valor menor que o percentile, ou seja identifica os indices das colunas que devem ser escolhidas
         features=np.array(dataset.features)[self.F <= top_50] #mesma logica mas para ir buscar o nome das mesmas
-        return Dataset(X=dataset.X[:,indices], y=dataset.y, features=features, label=dataset.label) 
+        return Dataset(X=dataset.X[:,indices], y=dataset.y, features=features, label=dataset.label) #dataseet.X aparece sem ordem particular, ou seja apenas apresenta as features que estao abaixo desse percentil
     
     def fit_transform(self,dataset:Dataset) -> Dataset:
         """
@@ -93,3 +96,4 @@ if __name__ == '__main__':
         selector = selector.fit(dataset)
         dataset_filtered = selector.transform(dataset)
         print(f"Features for percentile {percentile}: {dataset_filtered.features}")
+        print(dataset_filtered.X)
