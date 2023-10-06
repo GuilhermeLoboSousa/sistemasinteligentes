@@ -2,11 +2,11 @@ import sys
 sys.path.append("C:\\Users\\guilh\\OneDrive\\Documentos\\GitHub\\sistemasinteligentes")
 import numpy as np
 
-def manhattan_distance(x:np.ndarray,y:np.ndarray)->np.ndarray:
+def euclidean_distance(x:np.ndarray,y:np.ndarray)->np.ndarray:
     """
     this fuction allow to calculate the eucledian distance of a point (X) to a set of point y.
     so is to apply the pitagoras theorem 
-    distance_x_y1 = |x1 - y11| + |x2 - y12| + ... + |xn - y1n|
+    distance_y1n = sqrt((x1 - y11)^2 + (x2 - y12)^2 + ... + (xn - y1n)^2)
     distance_y2n = sqrt((x1 - y21)^2 + (x2 - y22)^2 + ... + (xn - y2n)^2
     etc
 
