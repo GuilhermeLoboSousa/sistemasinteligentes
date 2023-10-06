@@ -17,6 +17,6 @@ def euclidean_distance(x:np.ndarray,y:np.ndarray)->np.ndarray:
 
     Returns
     -----
-    the eucledian distance for each point iin y 
+    the eucledian distance for each point in y 
     """
     return np.sqrt(((x-y)**2).sum(axis=1))#eixo 1 porque vamos obter uma matriz de 1 linhas por muitas colunas , mas apenas queremos somar as linhas
