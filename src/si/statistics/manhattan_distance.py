@@ -4,10 +4,8 @@ import numpy as np
 
 def manhattan_distance(x:np.ndarray,y:np.ndarray)->np.ndarray:
     """
-    this fuction allow to calculate the eucledian distance of a point (X) to a set of point y.
-    so is to apply the pitagoras theorem 
+    this fuction allow to calculate the manhattan distance of a point (X) to a set of point y.
     distance_x_y1 = |x1 - y11| + |x2 - y12| + ... + |xn - y1n|
-    distance_y2n = sqrt((x1 - y21)^2 + (x2 - y22)^2 + ... + (xn - y2n)^2
     etc
 
     Parameters
@@ -17,6 +15,6 @@ def manhattan_distance(x:np.ndarray,y:np.ndarray)->np.ndarray:
 
     Returns
     -----
-    the eucledian distance for each point iin y 
+    the manhattan distance for each point iin y 
     """
-    return np.sqrt(((x-y)**2).sum(axis=1))#eixo 1 porque vamos obter uma matriz de 1 linhas por muitas colunas , mas apenas queremos somar as linhas
+    return np.abs((x-y).sum(axis=1))#eixo 1 porque vamos obter uma matriz de 1 linhas por muitas colunas , mas apenas queremos somar as linhas

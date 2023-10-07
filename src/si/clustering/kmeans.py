@@ -9,6 +9,25 @@ import matplotlib.pyplot as plt
 
 class Kmeans:
     """
+    It performs k-means clustering on the dataset.
+    It groups samples into k clusters by trying to minimize the distance between samples and their closest centroid.
+    It returns the centroids and the indexes of the closest centroid for each point like [0,1,2,0] we now that the line 1 and 4 are associated with de cluster 0
+
+    Parameters
+    ----------
+    k: int
+        Number of clusters.
+    max_iter: int
+        Maximum number of iterations.
+    distance: Callable
+        Distance function.
+
+    Attributes
+    ----------
+    centroids: np.array
+        Centroids of the clusters.
+    labels: np.array
+        Labels of the clusters.
     """
     def __init__(self,k:int,max_iter:int=1000,distance:Callable=euclidean_distance):
         """
