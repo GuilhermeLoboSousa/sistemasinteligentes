@@ -113,7 +113,6 @@ class Kmeans:
         return self.predict(dataset)
 
 if __name__ == '__main__':
-    import matplotlib.pyplot as plt
     np.random.seed(0)
     num_samples = 100
     num_features = 5
@@ -122,24 +121,24 @@ if __name__ == '__main__':
 
     dataset = Dataset(X=X, y=y)
     elbow=[]
-    for k_ in range (2,100):
+    for k_ in range (2,101):
         kmeans = Kmeans(k_)
         res = kmeans.fit_transform(dataset)
         predictions = kmeans.predict(dataset)
         #print(res.shape,"oi")
         #print(predictions.shape)
-        teste=kmeans.labels
         distances = kmeans.transform(dataset)
         close_dist = np.min(distances, axis=1)
         cotovelo=np.mean(close_dist,axis=0)
         elbow.append(cotovelo)
-        # Plote a curva da variância em relação a k
-        plt.figure(figsize=(8, 6))
-        plt.plot(range(2, 100), elbow, marker='o', linestyle='-', color='b')
-        plt.xlabel('Número de Clusters (k)')
-        plt.ylabel('Variancia das Percentagens')
-        plt.title('Método do Cotovelo (Elbow Method)')
-        plt.show()
+    
+    # Plote a curva da variância em relação a k
+    plt.figure(figsize=(8, 6))
+    plt.plot(range(2, 101), elbow, marker='o', linestyle='-', color='b')
+    plt.xlabel('Número de Clusters (k)')
+    plt.ylabel('Variancia das Percentagens')
+    plt.title('Método do Cotovelo (Elbow Method)')
+    plt.show()
          #cotovelo onde a distancias devem ir diminuindo, ou seja ele faz media de todas as distancias mais proximas e é normal se k = 100 que a distancia seja zero
 
         # unique_values, counts = np.unique(teste, return_counts=True)
