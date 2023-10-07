@@ -4,6 +4,8 @@ import numpy as np
 from typing import Callable
 from src.si.data.dataset import Dataset
 from src.si.statistics.euclidean_distance import euclidean_distance
+import matplotlib.pyplot as plt
+
 
 class Kmeans:
     """
@@ -112,34 +114,40 @@ class Kmeans:
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
-
+    np.random.seed(0)
     num_samples = 100
     num_features = 5
     X = np.random.rand(num_samples, num_features)  # Dados de recursos aleatórios
     y = np.random.randint(0, 2, num_samples)  # Rótulos aleatórios (assumindo uma classificação binária)
 
+    dataset = Dataset(X=X, y=y)
+    elbow=[]
+    for k_ in range (2,100):
+        kmeans = Kmeans(k_)
+        res = kmeans.fit_transform(dataset)
+        predictions = kmeans.predict(dataset)
+        #print(res.shape,"oi")
+        #print(predictions.shape)
+        teste=kmeans.labels
+        distances = kmeans.transform(dataset)
+        close_dist = np.min(distances, axis=1)
+        cotovelo=np.mean(close_dist,axis=0)
+        elbow.append(cotovelo)
+        # Plote a curva da variância em relação a k
+        plt.figure(figsize=(8, 6))
+        plt.plot(range(2, 100), elbow, marker='o', linestyle='-', color='b')
+        plt.xlabel('Número de Clusters (k)')
+        plt.ylabel('Variancia das Percentagens')
+        plt.title('Método do Cotovelo (Elbow Method)')
+        plt.show()
+         #cotovelo onde a distancias devem ir diminuindo, ou seja ele faz media de todas as distancias mais proximas e é normal se k = 100 que a distancia seja zero
 
-    dataset = Dataset(X=X,y=y)
+        # unique_values, counts = np.unique(teste, return_counts=True)
+        # total_samples = len(teste)
+        # percentages = (counts / total_samples) * 100
+        # for value, count, percentage in zip(unique_values, counts, percentages):
+        #     print(f"Valor {value}: {count} ocorrências ({percentage:.2f}%)") 
 
-    # Calcule a variância para diferentes valores de k
-    variances = []
-    for k in range(2, 100):  # Suponha que você deseja testar k de 1 a 10
-        kmeans = Kmeans(k=k)
-        kmeans.fit(dataset)
-        labels = kmeans.labels
-        unique_values, counts = np.unique(labels, return_counts=True)
-        total_samples = len(labels)
-        percentages = (counts / total_samples) * 100
-        print(percentages)
-        variance = np.var(percentages)
-        print(variance)
-        variances.append(variance)
+    
+    
 
-    # Plote a curva da variância em relação a k
-    plt.figure(figsize=(8, 6))
-    plt.plot(range(2, 100), variances, marker='o', linestyle='-', color='b')
-    plt.xlabel('Número de Clusters (k)')
-    plt.ylabel('Variância das Porcentagens')
-    plt.title('Método do Cotovelo (Elbow Method)')
-    plt.show()
-    #perguntar ao prof
