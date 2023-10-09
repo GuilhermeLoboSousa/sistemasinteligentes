@@ -75,7 +75,7 @@ class PCA:
         self.fit(dataset)
         return self.transform(dataset)
     
-    def plot_variance_explained(self):
+    def plot_variance_explained(self,explained_variance=None):
         """
         Creates  a bar plot of the variances explained by the principal components.
         """

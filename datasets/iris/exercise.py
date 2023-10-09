@@ -7,6 +7,13 @@ from src.io.csv_file import read_csv, write_csv
 from src.io.data_file import *
 from src.si.statistics.f_classification import f_classification
 from src.si.feature_selection.percentile import Percentile
+from src.si.decomposition.pca import PCA
+from src.si.statistics.euclidean_distance import euclidean_distance
+from src.si.clustering.kmeans import Kmeans
+
+
+
+
 
 
 filename = r"C:\Users\guilh\OneDrive\Documentos\GitHub\sistemasinteligentes\datasets\iris\iris.csv"
@@ -49,3 +56,12 @@ percentile_selector.fit(iris)
 dataset_filtered = percentile_selector.transform(iris)
 print("Features after percentile selection:")
 print(dataset_filtered.features)
+
+#exercicio aula 3
+iris
+pca = PCA(n_components=3)
+transformed_data = pca.fit_transform(iris)
+print("Conjunto de Dados Transformado:")
+print(transformed_data) #onde foi "projeto ao longo de pc1 -primeira colunca e ao longo de pc2-segunda coluna"
+#como nao percebia muito do ouput obtido decidi adicionar o metodo para ver a representabilidade
+print(pca.plot_variance_explained())
