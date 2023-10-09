@@ -85,7 +85,7 @@ class PCA:
         """
         if self.explained_variance is not None:
             explained_variance_normalized = self.explained_variance / sum(self.explained_variance) #normalizar as variancias
-            print(explained_variance_normalized)
+            #print(explained_variance_normalized)
 
             num_pcs = len(self.explained_variance) #preparar para o eixo do X onde vao os pc1,2,etc
             x_indices = range(1, num_pcs + 1)

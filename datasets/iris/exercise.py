@@ -59,7 +59,7 @@ print(dataset_filtered.features)
 
 #exercicio aula 3
 iris=read_csv(filename, sep=",",features=True,label=True)
-pca = PCA(n_components=1)
+pca = PCA(n_components=3)
 transformed_data = pca.fit_transform(iris)
 print("Conjunto de Dados Transformado:")
 print(transformed_data) #onde foi "projeto ao longo de pc1 -primeira colunca e ao longo de pc2-segunda coluna"
