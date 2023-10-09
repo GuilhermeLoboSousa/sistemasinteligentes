@@ -6,6 +6,7 @@ def manhattan_distance(x:np.ndarray,y:np.ndarray)->np.ndarray:
     """
     this fuction allow to calculate the manhattan distance of a point (X) to a set of point y.
     distance_x_y1 = |x1 - y11| + |x2 - y12| + ... + |xn - y1n|
+    distance_x_y2
     etc
 
     Parameters
@@ -18,3 +19,18 @@ def manhattan_distance(x:np.ndarray,y:np.ndarray)->np.ndarray:
     the manhattan distance for each point iin y 
     """
     return np.abs((x-y).sum(axis=1))#eixo 1 porque vamos obter uma matriz de 1 linhas por muitas colunas , mas apenas queremos somar as linhas
+
+#testar
+x = np.array([3, 4])
+
+y = np.array([[1, 2],
+              [5, 6],
+              [0, 0]])
+
+distances = manhattan_distance(x, y)
+print(distances)
+
+
+
+
+
