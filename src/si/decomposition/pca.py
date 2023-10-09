@@ -89,7 +89,7 @@ class PCA:
             plt.xlabel('Componente Principal (PC)')
             plt.ylabel('Variância Explicada Normalizada')
             plt.title('Variância Explicada por Componente Principal')
-            plt.xticks(x_indices)
+            plt.xticks(x_indices,x_indices)
             plt.show()
         else:
             print("Os componentes principais e as variâncias explicadas ainda não foram calculados.")        
