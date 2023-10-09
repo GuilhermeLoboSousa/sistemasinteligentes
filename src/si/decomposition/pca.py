@@ -25,6 +25,8 @@ class PCA:
         explained_variance
 
         """
+        if n_components <= 1 :
+            raise ValueError("O número de componentes principais (n_components) deve ser maior que 1.")
         self.n_components=n_components
         self.mean=None # média de cada samples
         self.components=None #componentes principais (matriz unitaria de eigenvectors)
@@ -39,6 +41,8 @@ class PCA:
         dataset (Dataset): Dataset object.
         """
         #1-centering the data
+        if self.n_components > dataset.X.shape[1]-1:#acrescentei estes avisos , que vao de acordo à teoria
+            raise ValueError("O número de componentes principais não pode ser maior ou igual ao número de colunas no dataset.")
         self.mean=np.mean(dataset.X,axis=0) #quero a media das minhas samples, linha a linha portanto
         self.center=np.subtract(dataset.X,self.mean) #centrar os pontos
 
@@ -75,12 +79,13 @@ class PCA:
         self.fit(dataset)
         return self.transform(dataset)
     
-    def plot_variance_explained(self,explained_variance=None):
+    def plot_variance_explained(self):
         """
         Creates  a bar plot of the variances explained by the principal components.
         """
         if self.explained_variance is not None:
             explained_variance_normalized = self.explained_variance / sum(self.explained_variance) #normalizar as variancias
+            print(explained_variance_normalized)
 
             num_pcs = len(self.explained_variance) #preparar para o eixo do X onde vao os pc1,2,etc
             x_indices = range(1, num_pcs + 1)
@@ -98,15 +103,15 @@ class PCA:
 
 if __name__ == "__main__":
     # dados
-    dataset = Dataset(X=np.array([[10, 21, 33],
-                                  [4, 15, 16],
-                                  [7, 28, 19],
-                                  [10, 13, 27]]),
+    dataset = Dataset(X=np.array([[10, 21, 33,67],
+                                  [4, 15, 16,43],
+                                  [7, 28, 19,3],
+                                  [10, 13, 27,22]]),
                       y=np.array([0, 1, 0, 1]),
-                      features=["A", "B", "C"],
+                      features=["A", "B", "C","D"],
                       label="cancer")
 
-    pca = PCA(n_components=2)
+    pca = PCA(n_components=3)
     transformed_data = pca.fit_transform(dataset)
     print("Conjunto de Dados Transformado:")
     print(transformed_data) #onde foi "projeto ao longo de pc1 -primeira colunca e ao longo de pc2-segunda coluna"
