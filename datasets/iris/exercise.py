@@ -10,6 +10,9 @@ from src.si.feature_selection.percentile import Percentile
 from src.si.decomposition.pca import PCA
 from src.si.statistics.euclidean_distance import euclidean_distance
 from src.si.clustering.kmeans import Kmeans
+from src.si.metrics.accuracy import accuracy
+from src.si.model_selection import *
+
 
 
 
