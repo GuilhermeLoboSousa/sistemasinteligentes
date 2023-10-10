@@ -73,10 +73,10 @@ def stratified_train_test_split(dataset:Dataset,test_size:float=0.2,random_state
         shuffle=np.random.permutation(class_indices) #fazer shuffle desses indices para colocar aleatoriedade
         select_indices_test=shuffle[:teste_samples] #selecionar alguns para teste e outros para treino, mantendo a proporção
         select_indices_train=shuffle[teste_samples:]
-        print(select_indices_test)
         test_index.append(select_indices_test) #colcoar tudo numa lista
         train_index.append(select_indices_train) #colcoar tudo numa lista
         contador_letras+=1
+    print(test_index)
     
     train=Dataset(dataset.X[train_index],dataset.y[train_index],features=dataset.features, label=dataset.label) #apenas muda X e y , ajustamos a treino e a test
     test=Dataset(dataset.X[test_index],dataset.y[test_index],features=dataset.features, label=dataset.label)
