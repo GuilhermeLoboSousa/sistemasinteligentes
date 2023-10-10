@@ -33,6 +33,7 @@ def train_test_split(dataset:Dataset,test_size:float=0.2,random_state:int=42) ->
     n_test=int(n_samples*test_size)#saber com quantas linhas vamos ficar o que depende obviamente do test_size ou seja se é 20 % ou 30 %,etc. O int é para arredondar
     
     test_index=permutations[:n_test]
+    print(test_index)
     train_index=permutations[n_test:] #por norma o de treino é maior logo tem de ser assimd
 
     train=Dataset(dataset.X[train_index],dataset.y[train_index],features=dataset.features, label=dataset.label) #apenas muda X e y , ajustamos a treino e a test
