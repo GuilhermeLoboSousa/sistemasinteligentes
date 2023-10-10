@@ -5,7 +5,7 @@ from src.si.data.dataset import Dataset
 from src.si.statistics.euclidean_distance import euclidean_distance
 from src.si.metrics.accuracy import accuracy
 from typing import Callable,Union
-from src.si.model_selection import split
+from src.si.model_selection.split import train_test_split
 
 
 
@@ -28,19 +28,23 @@ class KNNClassifier:
     dataset: np.ndarray
         The training data
     """
-    def __init(self,k:int=1,distance:Callable=euclidean_distance):
+    def __init__(self,k:int=1,distance:Callable=euclidean_distance):
         """
         Initialize the KNN classifier
 
         Parameters
         ----------
         k: int
-            The number of nearest neighbors to use
+            The number of nearest neighbors to use.
+            When k is small, can lead to a very flexible and potentially noisy model. It might be sensitive to individual data points, resulting in overfitting.
+            A moderate k value often works well in practice. It provides a balance between capturing local patterns and reducing noise. 
+            With very large k values, the model may become too biased and fail to capture local patterns, leading to underfitting.
+
         distance: Callable
             The distance function to use
         """
 
-        self.K=k # numero de k-mais proximos exemplos a considera
+        self.k=k # numero de k-mais proximos exemplos a considera
         self.distance=distance #função que vai calcular a distancia entre uma samples e as samples do dataset treino
         self.train_dataset=None #meu dataset treino
 
@@ -108,14 +112,23 @@ class KNNClassifier:
         return accuracy(dataset.y,predictions) #comparar aquilo que foi obtido com o verdadeiro dataset
 
 if __name__ == '__main__':
-    # import dataset
+    num_samples = 600
+    num_features = 100
+    num_classes = 2
 
-    # load and split the dataset
-    dataset_ = Dataset.from_random(600, 100, 2)
+    # dados aleatórios 
+    X = np.random.rand(num_samples, num_features)  
+    y = np.random.randint(0, num_classes, size=num_samples)  # classe aleatórios
+
+    dataset_ = Dataset(X=X, y=y)
+
+    #  nomes das features e da classe
+    dataset_.features = ["feature_" + str(i) for i in range(num_features)]
+    dataset_.label = "class_label"
     dataset_train, dataset_test = train_test_split(dataset_, test_size=0.2)
 
     # initialize the KNN classifier
-    knn = KNNClassifier(k=3)
+    knn = KNNClassifier(k=10000)
 
     # fit the model to the train dataset
     knn.fit(dataset_train)
