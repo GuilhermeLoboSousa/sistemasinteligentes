@@ -66,7 +66,8 @@ print(transformed_data) #onde foi "projeto ao longo de pc1 -primeira colunca e a
 print(pca.plot_variance_explained())
 
 #exercicio aula 4
-iris=read_csv(filename, sep=",",features=True,label=True)
-iris.shape
-#train_data, test_data = stratified_train_test_split(iris, test_size=0.2, random_state=42)
+iris=read_csv(filename, sep=",",features=True,label=True) #iris tem 150 linhas por 4 colunas
+train_data, test_data = stratified_train_test_split(iris, test_size=0.2, random_state=42)
+print("Tamanho do treino:", len(train_data))# 150 *0.8=120
+print("Tamanho do teste:", len(test_data)) #150 *0.2 =30
 

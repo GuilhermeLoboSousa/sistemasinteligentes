@@ -65,9 +65,9 @@ def stratified_train_test_split(dataset:Dataset,test_size:float=0.2,random_state
     labels, counts = np.unique(dataset.y, return_counts=True) #permite contar quantas vezes aparece cada classe mais proxima identificada anteriormente do genero (classe 0,3) (classe 1,2) (classe 2,1)
     train_index=[]
     test_index=[]
-    for classes in labels:#ciclo for é necessario para ter a preocupação de que se mantem a proporção de cada classe quer no dataset treino como teste
-        teste_samples=int(counts[classes]*test_size) #saber com quantas vamos ficar para teste e consequentemente para treino
-        class_indices = np.where(dataset.y == classes)[0] #verificar os indices onde se verifica a classe em questao no loop
+    for cla in labels:#ciclo for é necessario para ter a preocupação de que se mantem a proporção de cada classe quer no dataset treino como teste
+        teste_samples=int(counts[cla]*test_size) #saber com quantas vamos ficar para teste e consequentemente para treino
+        class_indices = np.where(dataset.y == cla)[0] #verificar os indices onde se verifica a classe em questao no loop
         shuffle=np.random.permutations(class_indices) #fazer shuffle desses indices para colocar aleatoriedade
         select_indices_test=shuffle[:teste_samples] #selecionar alguns para teste e outros para treino, mantendo a proporção
         select_indices_train=shuffle[teste_samples:]
