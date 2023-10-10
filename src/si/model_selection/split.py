@@ -66,7 +66,8 @@ def stratified_train_test_split(dataset:Dataset,test_size:float=0.2,random_state
     train_index=[]
     test_index=[]
     for class_label in labels:#ciclo for é necessario para ter a preocupação de que se mantem a proporção de cada classe quer no dataset treino como teste
-        teste_samples=int(counts[class_label]*test_size) #saber com quantas vamos ficar para teste e consequentemente para treino
+        freq=counts[class_label]
+        teste_samples=int(freq*test_size) #saber com quantas vamos ficar para teste e consequentemente para treino
         class_indices = np.where(dataset.y == class_label)[0] #verificar os indices onde se verifica a classe em questao no loop
         shuffle=np.random.permutations(class_indices) #fazer shuffle desses indices para colocar aleatoriedade
         select_indices_test=shuffle[:teste_samples] #selecionar alguns para teste e outros para treino, mantendo a proporção
