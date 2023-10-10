@@ -14,6 +14,8 @@ from src.si.metrics.accuracy import accuracy
 from src.si.model_selection import *
 from src.si.model_selection.split import train_test_split
 from src.si.model_selection.split import stratified_train_test_split
+from collections import Counter
+
 
 filename = r"C:\Users\guilh\OneDrive\Documentos\GitHub\sistemasinteligentes\datasets\iris\iris.csv"
 
@@ -69,4 +71,8 @@ print(pca.plot_variance_explained())
 iris=read_csv(filename, sep=",",features=True,label=True) #iris tem 150 linhas por 4 colunas
 train_data, test_data = stratified_train_test_split(iris, test_size=0.2, random_state=42)
 print("Tamanho do treino:", train_data.shape())# 150 *0.8=120
+# Verifique a proporção das classes nos conjuntos de treinamento e teste
+label_counts = Counter(train_data.y)
+labels_count_original=Counter(iris.y)
+print(label_counts,labels_count_original) #mesma proproção parece correto
 

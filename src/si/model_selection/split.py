@@ -75,7 +75,7 @@ def stratified_train_test_split(dataset:Dataset,test_size:float=0.2,random_state
         select_indices_train=shuffle[teste_samples:]
         test_index.extend(select_indices_test) #colcoar tudo numa lista
         train_index.extend(select_indices_train) #colcoar tudo numa lista
-        contador_letras+=1
+        contador_letras+=1 # fiz este contador pois pode aparecer labels que nao sao numeros e assim permite na mesma ir buscarou seja quando em vez de claasse 0 ,1 ,2 tenho classe a,b,c com o contador é a mesma coisa
     
     train=Dataset(dataset.X[train_index],dataset.y[train_index],features=dataset.features, label=dataset.label) #apenas muda X e y , ajustamos a treino e a test
     test=Dataset(dataset.X[test_index],dataset.y[test_index],features=dataset.features, label=dataset.label)
