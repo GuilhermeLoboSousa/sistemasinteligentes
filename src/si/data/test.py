@@ -12,5 +12,5 @@ label = 'target'
 labels, counts = np.unique(y, return_counts=True)
 print(labels,counts)
 
-#for x in labels:
+for x in labels:
     #print(int(counts[x]*0.4))
