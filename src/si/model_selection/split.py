@@ -69,12 +69,12 @@ def stratified_train_test_split(dataset:Dataset,test_size:float=0.2,random_state
     for class_label in labels:#ciclo for é necessario para ter a preocupação de que se mantem a proporção de cada classe quer no dataset treino como teste
         freq=counts[contador_letras]
         teste_samples=int(freq*test_size) #saber com quantas vamos ficar para teste e consequentemente para treino
-        class_indices = dataset.shape()[0] #verificar os indices onde se verifica a classe em questao no loop
+        class_indices =np.where(dataset.y == class_label)[0]#verificar os indices onde se verifica a classe em questao no loop
         shuffle=np.random.permutation(class_indices) #fazer shuffle desses indices para colocar aleatoriedade
         select_indices_test=shuffle[:teste_samples] #selecionar alguns para teste e outros para treino, mantendo a proporção
         select_indices_train=shuffle[teste_samples:]
-        test_index.append(select_indices_test) #colcoar tudo numa lista
-        train_index.append(select_indices_train) #colcoar tudo numa lista
+        test_index.append(class_indices[select_indices_test]) #colcoar tudo numa lista
+        train_index.append(class_indices[select_indices_train]) #colcoar tudo numa lista
         contador_letras+=1
     
     train=Dataset(dataset.X[train_index],dataset.y[train_index],features=dataset.features, label=dataset.label) #apenas muda X e y , ajustamos a treino e a test
