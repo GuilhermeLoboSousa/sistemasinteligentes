@@ -40,4 +40,43 @@ def train_test_split(dataset:Dataset,test_size:float=0.2,random_state:int=42) ->
 
     return train,test
 
+def stratified_train_test_split(dataset:Dataset,test_size:float=0.2,random_state:int=42) -> tuple[Dataset,Dataset]: #utilizado quando a proporção das classes nao é correta, ou seja garante que a proporção de cada classe é igual no dataset treino e test
+    """
+    Divide the dataset into training and testing sets in a stratified manner.
+
+    Parameters
+    ----------
+    dataset: Dataset
+        The dataset to be split.
+    test_size: float
+        The proportion of the dataset to be used for testing.
+    random_state: int
+        The seed for random number generation.
+
+    Returns
+    -------
+    train: Dataset
+        The training dataset.
+    test: Dataset
+        The testing dataset.
+    """
+    np.random.seed(random_state)
+
+    labels, counts = np.unique(dataset.y, return_counts=True) #permite contar quantas vezes aparece cada classe mais proxima identificada anteriormente do genero (classe 0,3) (classe 1,2) (classe 2,1)
+    train_index=[]
+    test_index=[]
+    for classes in labels:#ciclo for é necessario para ter a preocupação de que se mantem a proporção de cada classe quer no dataset treino como teste
+        teste_samples=int(counts[classes]*test_size) #saber com quantas vamos ficar para teste e consequentemente para treino
+        class_indices = np.where(dataset.y == classes)[0] #verificar os indices onde se verifica a classe em questao no loop
+        shuffle=np.random.permutations(class_indices) #fazer shuffle desses indices para colocar aleatoriedade
+        select_indices_test=shuffle[:teste_samples] #selecionar alguns para teste e outros para treino, mantendo a proporção
+        select_indices_train=shuffle[teste_samples:]
+        test_index.append(select_indices_test) #colcoar tudo numa lista
+        train_index.append(select_indices_train) #colcoar tudo numa lista
+    
+    train=Dataset(dataset.X[train_index],dataset.y[train_index],features=dataset.features, label=dataset.label) #apenas muda X e y , ajustamos a treino e a test
+    test=Dataset(dataset.X[test_index],dataset.y[test_index],features=dataset.features, label=dataset.label)
+    return train,test
+
+
 

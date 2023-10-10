@@ -12,12 +12,8 @@ from src.si.statistics.euclidean_distance import euclidean_distance
 from src.si.clustering.kmeans import Kmeans
 from src.si.metrics.accuracy import accuracy
 from src.si.model_selection import *
-
-
-
-
-
-
+from src.si.model_selection.split import train_test_split
+from src.si.model_selection.split import stratified_train_test_split
 
 filename = r"C:\Users\guilh\OneDrive\Documentos\GitHub\sistemasinteligentes\datasets\iris\iris.csv"
 
@@ -68,3 +64,9 @@ print("Conjunto de Dados Transformado:")
 print(transformed_data) #onde foi "projeto ao longo de pc1 -primeira colunca e ao longo de pc2-segunda coluna"
 #como nao percebia muito do ouput obtido decidi adicionar o metodo para ver a representabilidade
 print(pca.plot_variance_explained())
+
+#exercicio aula 4
+iris=read_csv(filename, sep=",",features=True,label=True)
+iris.shape
+#train_data, test_data = stratified_train_test_split(iris, test_size=0.2, random_state=42)
+
