@@ -116,19 +116,19 @@ if __name__ == '__main__':
     num_features = 100
     num_classes = 2
 
-    # dados aleatórios 
+    # random data
     X = np.random.rand(num_samples, num_features)  
     y = np.random.randint(0, num_classes, size=num_samples)  # classe aleatórios
 
     dataset_ = Dataset(X=X, y=y)
 
-    #  nomes das features e da classe
+    #  features and class name
     dataset_.features = ["feature_" + str(i) for i in range(num_features)]
     dataset_.label = "class_label"
     dataset_train, dataset_test = train_test_split(dataset_, test_size=0.2)
 
     # initialize the KNN classifier
-    knn = KNNClassifier(k=10000)
+    knn = KNNClassifier(k=3)
 
     # fit the model to the train dataset
     knn.fit(dataset_train)
