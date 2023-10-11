@@ -11,6 +11,7 @@ from src.si.decomposition.pca import PCA
 from src.si.statistics.euclidean_distance import euclidean_distance
 from src.si.clustering.kmeans import Kmeans
 from src.si.metrics.accuracy import accuracy
+from src.si.metrics.rmse import rmse
 from src.si.model_selection import *
 from src.si.model_selection.split import train_test_split
 from src.si.model_selection.split import stratified_train_test_split
