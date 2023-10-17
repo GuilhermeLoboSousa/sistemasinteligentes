@@ -110,7 +110,7 @@ class LogisticRegression:
             penalization_term = self.theta * (1 - self.alpha * (self.l2_penalty / m)) #seguir  formula
 
             # updating the model parameters
-            self.theta = ( self.theta*penalization_term) - gradient #acho que esta mal nao deveria ser multiplicar???? porque o penalization term ja tem tudo
+            self.theta = ( penalization_term) - gradient #acho que esta mal nao deveria ser multiplicar???? porque o penalization term ja tem tudo
             #tirei o multiplixar e a verdade é que aproximou os valores da minha classe com o do sckitlearn
             self.theta_zero = self.theta_zero - (self.alpha * (1 / m)) * np.sum(y_pred - dataset.y) # o x0 seria 1 por isso nao se coloca
 
