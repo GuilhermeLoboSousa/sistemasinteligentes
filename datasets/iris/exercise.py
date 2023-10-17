@@ -105,7 +105,7 @@ print(f"Cost: {cost}")
 
 #exercicio aula 5
 filename_breast = r"C:\Users\guilh\OneDrive\Documentos\GitHub\sistemasinteligentes\datasets\breast_bin\breast-bin.csv"
-breast=read_csv(filename_cpu, sep=",",features=True,label=True)
+breast=read_csv(filename_breast, sep=",",features=True,label=True)
 train_data, test_data = stratified_train_test_split(breast, test_size=0.20, random_state=42)
 model = LogisticRegression()
 model.fit(train_data)
