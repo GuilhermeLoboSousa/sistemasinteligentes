@@ -16,11 +16,12 @@ from src.si.model_selection import *
 from src.si.model_selection.split import train_test_split
 from src.si.model_selection.split import stratified_train_test_split
 from collections import Counter
-from src.si.model_selection.split import stratified_train_test_split
 from src.si.models.knn_regressor import KNNRegressor
 from src.si.models.categorical_nb import CategoricalNB
 from src.si.models.knn_classifier import KNNClassifier
 from src.si.models.ridge_regression import RidgeRegression
+from src.si.models.logistic_regression import LogisticRegression
+
 
 
 filename = r"C:\Users\guilh\OneDrive\Documentos\GitHub\sistemasinteligentes\datasets\iris\iris.csv"
@@ -102,3 +103,13 @@ print(f"Score: {score}")
 cost = model.cost(test_data)
 print(f"Cost: {cost}")
 
+#exercicio aula 5
+filename_breast = r"C:\Users\guilh\OneDrive\Documentos\GitHub\sistemasinteligentes\datasets\breast_bin\breast-bin.csv"
+breast=read_csv(filename_cpu, sep=",",features=True,label=True)
+train_data, test_data = stratified_train_test_split(breast, test_size=0.20, random_state=42)
+model = LogisticRegression()
+model.fit(train_data)
+score = model.score(test_data)
+print(f"Score: {score}")
+cost = model.cost(test_data)
+print(f"Cost: {cost}")
