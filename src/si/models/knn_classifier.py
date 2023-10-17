@@ -136,5 +136,3 @@ if __name__ == '__main__':
     # evaluate the model on the test dataset
     score = knn.score(dataset_test)
     print(f'The accuracy of the model is: {score}')
-
-

@@ -26,17 +26,17 @@ class CategoricalNB:
         num_classes=len(unique_classes) #quantas classes sao
 
         class_counts=np.zeros(num_classes)
-        feature_counts=np.zeros(num_classes,n_features)
+        feature_counts=np.zeros((num_classes,n_features))
         self.class_prior=np.zeros(num_classes)
 
         # Calculate class_counts 
         for class_label in range(num_classes): # quere saber quntas samples tenho por classe, mas adicionar o var para n ter zeros 
-            class_counts[class_label] = np.sum(dataset.y == class_label) + self.var_smoothing
+            class_counts[class_label] = np.sum(dataset.y == class_label) + self.smothing
         
         # Calculate feature_counts , saber quantas classe 0 ou 1 tenho por coluna
         for class_label in range(num_classes):
             class_samples = dataset.X[dataset.y == class_label] #fico no dataset apenas com classe 0 ou 1 ( no caso exemplo)
-            feature_counts[class_label, :] = np.sum(class_samples, axis=0) + self.var_smoothing #começa na primeira linha e regista o somatorio por coluna de todas
+            feature_counts[class_label, :] = np.sum(class_samples, axis=0) + self.smothing #começa na primeira linha e regista o somatorio por coluna de todas
 
         self.class_prior=class_counts/n_samples #probabilidade de pertencer a classe 0 ou 1, difente do class_count que é frequencia absoluta
 
@@ -63,10 +63,10 @@ class CategoricalNB:
 
         predicted_class = np.zeros(n_samples, dtype=int)  # para guardar os resultados final
 
-        for sample_index in range(n_samples):
+        for sample_index in range(n_samples):#quero que calcule por todas as linhas, como diz no slide "for each sample"
             sample = dataset.X[sample_index]
-            for class_label in range(num_classes):
-                class_probs[class_label] = ( np.prod(sample * self.feature_probs[class_label] + (1 - sample) * (1 - self.feature_probs[class_label])) * self.class_prior[class_label])
+            for class_label in range(num_classes): #como diz no slide "for each class"
+                class_probs[class_label] = ( np.prod(sample * self.feature_probs[class_label] + (1 - sample) * (1 - self.feature_probs[class_label])) * self.class_prior[class_label]) #dado pelo slide do prof(nao chegava la)
             predicted_class[sample_index] = np.argmax(class_probs) #vamos ficar com um valor maximo por coluna que representa a probabilidade de pertencere a uma determinada classe
             #iremos obter o indice onde se obteve maior valor de class_probs, no nosso exemplo seria ou 0 ou 1
             #depois teremos de comparar o obtido com o real no dataset
@@ -101,8 +101,13 @@ if __name__ == '__main__':
               [0, 0, 0],
               [1, 0, 0],
               [0, 1, 0],
-              [1, 1, 1]])
-    y = np.array([0,0,1,1,0,0,1,1,1,0])
+              [1, 1, 1],
+              [0, 0, 1],
+              [1, 0, 1],
+              [0, 1, 1],
+              [1, 1, 0],
+              [1, 0, 0]])
+    y = np.array([0,0,1,0,0,0,1,1,1,0,1,0,0,0,1])
 
 
     dataset_ = Dataset(X=X, y=y)
@@ -121,5 +126,51 @@ if __name__ == '__main__':
 
     # evaluate the model on the test dataset
     score = nb.score(dataset_test)
-    print(f'The accuracy of the model is: {score}')
+    print(f'The accuracy of the model, made by me, is: {score}')
+
+
+#teste com o do sckitlearn:
+from sklearn.naive_bayes import CategoricalNB
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# Seu conjunto de dados
+X = np.array([[0, 0, 1],
+              [0, 1, 1],
+              [1, 0, 1],
+              [1, 0, 0],
+              [1, 1, 0],
+              [0, 0, 1],
+              [0, 0, 0],
+              [1, 0, 0],
+              [0, 1, 0],
+              [1, 1, 1],
+              [0, 0, 1],
+              [1, 0, 1],
+              [0, 1, 1],
+              [1, 1, 0],
+              [1, 0, 0]])
+y = np.array([0,0,1,0,0,0,1,1,1,0,1,0,0,0,1])
+
+# Variável para suavização (Laplace Smoothing)
+var_smoothing = 1.0
+
+# Aplicar suavização manualmente
+X_smoothed = X + var_smoothing
+
+# Separe os dados em conjuntos de treinamento e teste
+X_train, X_test, y_train, y_test = train_test_split(X_smoothed, y, test_size=0.2, random_state=42)
+
+# Crie uma instância do CategoricalNB e ajuste-a aos dados de treinamento
+nb = CategoricalNB()
+nb.fit(X_train, y_train)
+
+# Faça previsões usando os dados de teste
+y_pred = nb.predict(X_test)
+
+# Calcule a precisão das previsões
+accuracy = accuracy_score(y_test, y_pred)
+
+# Exiba a precisão
+print("Precisão modelo feito por outros:", accuracy)
     
