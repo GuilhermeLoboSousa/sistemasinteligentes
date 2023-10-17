@@ -175,17 +175,23 @@ class LogisticRegression:
         cost: float
             The cost function of the model
         """
-        predictions=sigmoid_function(np.dot(X, self.theta) + self.theta_zero) #tenho de aplicar sigmoid as previsoes porque estao a trabalhar no regresao logistica
+        predictions=sigmoid_function(np.dot(dataset.X, self.theta) + self.theta_zero) #tenho de aplicar sigmoid as previsoes porque estao a trabalhar no regresao logistica
         cost = (dataset.y * np.log(predictions)) + (1 - dataset.y) * np.log(1 - predictions)
         cost = np.sum(cost) * (-1 / dataset.shape()[0])
         cost = cost + (self.l2_penalty * np.sum(self.theta ** 2) / (2 * dataset.shape()[0]))
         return cost
     
-    if __name__ == '__main__':
+if __name__ == '__main__':
     # import dataset
 
     # load and split the dataset
-    dataset_ = Dataset.from_random(600, 100, 2)
+    num_samples = 600
+    num_features = 100
+    num_classes = 2
+    X = np.random.rand(num_samples, num_features)
+    y = np.random.randint(num_classes, size=num_samples)   #classes aleatórias
+
+    dataset_ = Dataset(X=X, y=y)
     dataset_train, dataset_test = stratified_train_test_split(dataset_, test_size=0.2)
 
     # fit the model
@@ -205,4 +211,4 @@ class LogisticRegression:
     import matplotlib.pyplot as plt
 
     plt.plot(list(model.cost_history.keys()), list(model.cost_history.values()))
-    plt.show()
+    plt.show() #gráfico do historial dos valores do historico
