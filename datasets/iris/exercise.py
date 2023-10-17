@@ -16,6 +16,10 @@ from src.si.model_selection import *
 from src.si.model_selection.split import train_test_split
 from src.si.model_selection.split import stratified_train_test_split
 from collections import Counter
+from src.si.model_selection.split import stratified_train_test_split
+from src.si.models.knn_regressor import KNNRegressor
+from src.si.models.categorical_nb import CategoricalNB
+from src.si.models.knn_classifier import KNNClassifier
 
 
 filename = r"C:\Users\guilh\OneDrive\Documentos\GitHub\sistemasinteligentes\datasets\iris\iris.csv"
@@ -77,3 +81,11 @@ label_counts = Counter(train_data.y)
 labels_count_original=Counter(iris.y)
 print(label_counts,labels_count_original) #mesma proproção parece correto
 
+#exercicio aula 4
+filename_cpu = r"C:\Users\guilh\OneDrive\Documentos\GitHub\sistemasinteligentes\datasets\cpu\cpu.csv"
+cpu=read_csv(filename_cpu, sep=",",features=True,label=True) #iris tem 150 linhas por 4 colunas
+train_data, test_data = stratified_train_test_split(cpu, test_size=0.2, random_state=42)
+knn_regressor = KNNRegressor(k=2)  
+knn_regressor.fit(train_data)
+score = knn_regressor.score(test_data)
+print(f'The rmse of the model is: {score}')
