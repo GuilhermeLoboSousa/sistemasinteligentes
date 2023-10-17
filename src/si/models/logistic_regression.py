@@ -110,7 +110,7 @@ class LogisticRegression:
             penalization_term = self.theta * (1 - self.alpha * (self.l2_penalty / m)) #seguir  formula
 
             # updating the model parameters
-            self.theta = ( penalization_term) - gradient #acho que esta mal nao deveria ser multiplicar???? porque o penalization term ja tem tudo
+            self.theta = ( self.theta*penalization_term) - gradient #acho que esta mal nao deveria ser multiplicar???? porque o penalization term ja tem tudo
             #tirei o multiplixar e a verdade é que aproximou os valores da minha classe com o do sckitlearn
             self.theta_zero = self.theta_zero - (self.alpha * (1 / m)) * np.sum(y_pred - dataset.y) # o x0 seria 1 por isso nao se coloca
 
@@ -142,10 +142,7 @@ class LogisticRegression:
         predictions= sigmoid_function(np.dot(X, self.theta) + self.theta_zero) #tenho de aplicar sigmoid as previsoes porque estao a trabalhar no regresao logistica
 
         # convert the predictions to 0 or 1 (binarization)
-        mask = predictions >= 0.5
-        predictions[mask] = 1
-        predictions[~mask] = 0
-        return predictions
+        return  np.where(predictions >= 0.5, 1, 0) #alterei do prof meti mais simples e acho que da
 
     def score(self, dataset: Dataset) -> float:
         """
