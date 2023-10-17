@@ -15,39 +15,111 @@ class CategoricalNB:
 
     def __init__(self,smothing:float=1.0): #O objetivo do Laplace Smoothing é adicionar uma pequena quantidade (normalmente um) a todas as contagens . Esa "suavização" ajuda a resolver problemas em que uma probabilidade de zero ou uma contagem de zero .
         self.smothing=smothing
+        self.class_prior=None
+        self.feature_probs=None
 
-    def class_prior(self,dataset:Dataset):
-        classes,count=np.unique(dataset.y,return_counts=True)
-        total=dataset.shape()[0]
-        prob_por_classe=[]
-        for cada_classe in classes:
-            adicionar=(count[cada_classe] + self.smothing)/total
-            prob_por_classe.append(adicionar)
-        return prob_por_classe
     
-def feature_probs(self, dataset: Dataset):
-    classes = np.unique(dataset.y)
-    num_classes = len(classes)
-    num_features = dataset.X.shape[1]  # Número de recursos
+    def fit(self, dataset:Dataset) -> "NB":
+        n_samples=dataset.X.shape[0] # numero de linhas
+        n_features=dataset.X.shape[1] #numero de colunas
+        unique_classes = np.unique(dataset.y) #possiveis classes que existem
+        num_classes=len(unique_classes) #quantas classes sao
 
-    # Inicialize um dicionário para armazenar as probabilidades de cada recurso
-    feature_probabilities = {feature_idx: {0: np.zeros(num_classes), 1: np.zeros(num_classes)} for feature_idx in range(num_features)}
+        class_counts=np.zeros(num_classes)
+        feature_counts=np.zeros(num_classes,n_features)
+        self.class_prior=np.zeros(num_classes)
 
-    for i, classe in enumerate(classes):
-        # Filtra o dataset apenas para a classe atual
-        class_subset = dataset[dataset.y == classe]
+        # Calculate class_counts 
+        for class_label in range(num_classes): # quere saber quntas samples tenho por classe, mas adicionar o var para n ter zeros 
+            class_counts[class_label] = np.sum(dataset.y == class_label) + self.var_smoothing
+        
+        # Calculate feature_counts , saber quantas classe 0 ou 1 tenho por coluna
+        for class_label in range(num_classes):
+            class_samples = dataset.X[dataset.y == class_label] #fico no dataset apenas com classe 0 ou 1 ( no caso exemplo)
+            feature_counts[class_label, :] = np.sum(class_samples, axis=0) + self.var_smoothing #começa na primeira linha e regista o somatorio por coluna de todas
 
-        for feature_idx in range(num_features):
-            # Contagem de exemplos com o recurso sendo 0
-            count_0 = np.sum(class_subset.X[:, feature_idx] == 0)
-            # Contagem de exemplos com o recurso sendo 1
-            count_1 = np.sum(class_subset.X[:, feature_idx] == 1)
+        self.class_prior=class_counts/n_samples #probabilidade de pertencer a classe 0 ou 1, difente do class_count que é frequencia absoluta
 
-            # Armazena as contagens nas probabilidades
-            feature_probabilities[feature_idx][0][i] = count_0
-            feature_probabilities[feature_idx][1][i] = count_1
+        self.feature_probs = np.zeros((num_classes, n_features), dtype=float) #probabilidade de cada feature ser de classe 0 ou 1 , face ao eexmplo em estudo
+        #seria uma matriz de n_class pelo numero de features
 
-    return feature_probabilities
+        # Calculate feature_probs , realizar o que está no slide 27 da aula 4
+        for class_label in range(num_classes):
+            self.feature_probs[class_label, :] = feature_counts[class_label, :] / class_counts[class_label]  #cada valor vai ser divido pelo total 
+
+        return self
+
+    def predict (self,dataset:Dataset):
+        """
+        """
+        if self.feature_probs is None or self.class_prior is None:
+            raise ValueError("O modelo não foi treinado. Use fit() para treinar o modelo primeiro.")
+        
+        n_samples = dataset.X.shape[0]
+        num_classes = len(self.class_prior)
+
+        class_probs = np.zeros((n_samples, num_classes), dtype=float) # matriz que vai ter linhas=n_samples e colunas = n_features, onde vamos er a probabilidade de cada sample pertencer a uma determinada class
+        #sendo que vamos querer ficar com a maior probabilidade
+
+        predicted_class = np.zeros(n_samples, dtype=int)  # para guardar os resultados final
+
+        for sample_index in range(n_samples):
+            sample = dataset.X[sample_index]
+            for class_label in range(num_classes):
+                class_probs[class_label] = ( np.prod(sample * self.feature_probs[class_label] + (1 - sample) * (1 - self.feature_probs[class_label])) * self.class_prior[class_label])
+            predicted_class[sample_index] = np.argmax(class_probs) #vamos ficar com um valor maximo por coluna que representa a probabilidade de pertencere a uma determinada classe
+            #iremos obter o indice onde se obteve maior valor de class_probs, no nosso exemplo seria ou 0 ou 1
+            #depois teremos de comparar o obtido com o real no dataset
+
+        return predicted_class # algo com n_samples a 0 ou 1
+    
+    def score(self,dataset:Dataset) -> float:
+        """
+        It returns the accuracy of the model on the given dataset
+
+        Parameters
+        ----------
+        dataset: Dataset
+            The dataset to evaluate the model on
+
+        Returns
+        -------
+        rmse: float
+            The accuracy of the model
+        """       
+        predictions=self.predict(dataset)
+        return accuracy(dataset.y,predictions) #comparar aquilo que foi obtido com o verdadeiro dataset
 
 
+if __name__ == '__main__':
+    X = np.array([[0, 0, 1],
+              [0, 1, 1],
+              [1, 0, 1],
+              [1, 0, 0],
+              [1, 1, 0],
+              [0, 0, 1],
+              [0, 0, 0],
+              [1, 0, 0],
+              [0, 1, 0],
+              [1, 1, 1]])
+    y = np.array([0,0,1,1,0,0,1,1,1,0])
+
+
+    dataset_ = Dataset(X=X, y=y)
+
+    #features and class name 
+    dataset_.features = ["ceu","vento","humidade"]
+    dataset_.label = "jogar"
+
+    dataset_train, dataset_test = train_test_split(dataset_, test_size=0.2)
+
+    # regressor KNN
+    nb = CategoricalNB(smothing=1.0)  
+
+    # fit the model to the train dataset
+    nb.fit(dataset_train)
+
+    # evaluate the model on the test dataset
+    score = nb.score(dataset_test)
+    print(f'The accuracy of the model is: {score}')
     
