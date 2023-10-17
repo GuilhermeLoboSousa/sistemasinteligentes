@@ -94,7 +94,7 @@ print(f'The rmse of the model is: {score}')
 #exercicio aula 5
 filename_cpu = r"C:\Users\guilh\OneDrive\Documentos\GitHub\sistemasinteligentes\datasets\cpu\cpu.csv"
 cpu=read_csv(filename_cpu, sep=",",features=True,label=True)
-train_data, test_data = stratified_train_test_split(cpu, test_size=0.2, random_state=42)
+train_data, test_data = stratified_train_test_split(cpu, test_size=0.20, random_state=42)
 model = RidgeRegression()
 model.fit(train_data)
 score = model.score(test_data)
