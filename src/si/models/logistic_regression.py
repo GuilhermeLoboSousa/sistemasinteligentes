@@ -139,10 +139,13 @@ class LogisticRegression:
             The predictions of the dataset
         """
         X = (dataset.X - self.mean) / self.std if self.scale else dataset.X #fazer isto
-        predictions=sigmoid_function(np.dot(X, self.theta) + self.theta_zero) #tenho de aplicar sigmoid as previsoes porque estao a trabalhar no regresao logistica
+        predictions= sigmoid_function(np.dot(X, self.theta) + self.theta_zero) #tenho de aplicar sigmoid as previsoes porque estao a trabalhar no regresao logistica
 
         # convert the predictions to 0 or 1 (binarization)
-        return  np.where(predictions >= 0.5, 1, 0) #alterei do prof meti mais simples e acho que da
+        mask = predictions >= 0.5
+        predictions[mask] = 1
+        predictions[~mask] = 0
+        return predictions
 
     def score(self, dataset: Dataset) -> float:
         """
