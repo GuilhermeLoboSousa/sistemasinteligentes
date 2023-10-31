@@ -6,9 +6,9 @@ import numpy as np
 
 import numpy as np
 
-predictions = [0, 1,1,1,0,0,0,0]
-a,b=np.unique(predictions,return_counts=True)
-print(len(a))
+y = np.array([2, 3, 4, 5])
+a,b=np.unique(X,return_counts=True)
+print(a)
 
 
   

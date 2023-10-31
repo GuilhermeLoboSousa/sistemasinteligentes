@@ -23,7 +23,7 @@ def entropy_impurity(y:np.ndarray)->float: #quando maior for a entropia pior foi
         impurity -= (counts[x]/len(y))*np.log2(counts[x]/len(y))
     return impurity
 
-def gini_impurity(y:np.ndarray)->float: #quando maior for gini melhor foi o "split" realizado
+def gini_impurity(y:np.ndarray)->float: #quando menor for gini melhor foi o "split" realizado
     """
     Calculates the impurity of a dataset using the Gini index.
 
