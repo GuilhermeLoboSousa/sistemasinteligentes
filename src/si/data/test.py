@@ -6,9 +6,9 @@ import numpy as np
 
 import numpy as np
 
-y = np.array([2, 3, 4, 5])
-a,b=np.unique(X,return_counts=True)
-print(a)
+y = np.array([2, 2, 2, 5])
+a,b=np.unique(y,return_counts=True)
+print(np.argmax(b))
 
 
   
