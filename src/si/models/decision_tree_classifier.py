@@ -1,3 +1,5 @@
+import sys
+sys.path.append("C:\\Users\\guilh\\OneDrive\\Documentos\\GitHub\\sistemasinteligentes")
 from typing import Literal, Tuple, Union
 
 import numpy as np
