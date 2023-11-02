@@ -63,7 +63,9 @@ def k_fold_cross_validation(model, dataset: Dataset, scoring: callable = None, c
 def leave_one_out_cross_validation(model, dataset: Dataset, scoring: callable = None, seed: int = None) -> List[float]:
     """
     Perform Leave-One-Out Cross-Validation (LOOCV) on the given model and dataset.
-
+    exhaustive method
+    there is no training, test division
+    always train on all except 1 sample which is a test #treinamos 99 sample e a sample A é test, depois treinamos 99 sample e a sample B é teste etc
     Parameters
     ----------
     model
@@ -89,10 +91,10 @@ def leave_one_out_cross_validation(model, dataset: Dataset, scoring: callable = 
     indices = np.arange(num_samples)
     np.random.shuffle(indices)
 
-    for i in range(num_samples):
+    for i in range(num_samples):#fazeer para todas as samples
         # Use data point i as the test set, and the rest as the training set
-        train_indices = np.delete(indices, i)
-        test_indices = [i]
+        train_indices = np.delete(indices, i)#remover sempre 1 sample
+        test_indices = [i] #a removida vai ser usada para teste
 
         dataset_train = Dataset(dataset.X[train_indices], dataset.y[train_indices])
         dataset_test = Dataset(dataset.X[test_indices], dataset.y[test_indices])
@@ -100,7 +102,7 @@ def leave_one_out_cross_validation(model, dataset: Dataset, scoring: callable = 
         # Fit the model on the training set and score it on the test set
         model.fit(dataset_train)
         fold_score = scoring(dataset_test.y, model.predict(dataset_test)) if scoring is not None else model.score(
-            dataset_test)
+            dataset_test) #mesma logica ja verificada
         scores.append(fold_score)
 
     return scores
