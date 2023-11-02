@@ -22,7 +22,7 @@ from src.si.models.knn_classifier import KNNClassifier
 from src.si.models.ridge_regression import RidgeRegression
 from src.si.models.logistic_regression import LogisticRegression
 from src.si.model_selection.cross_validate import k_fold_cross_validation
-
+from src.si.model_selection.grid_search import grid_search_cv
 
 
 filename = r"C:\Users\guilh\OneDrive\Documentos\GitHub\sistemasinteligentes\datasets\iris\iris.csv"
@@ -123,3 +123,24 @@ model = LogisticRegression()
 scores_ = k_fold_cross_validation(model, breast, cv=5, seed=1)
 print(scores_)
 print(f'Mean score: {np.mean(scores_)} +/- {np.std(scores_)}')
+
+#exercicio ala 7 grid
+filename_breast = r"C:\Users\guilh\OneDrive\Documentos\GitHub\sistemasinteligentes\datasets\breast_bin\breast-bin.csv"
+breast=read_csv(filename_breast, sep=",",features=True,label=True)
+model = LogisticRegression()
+parameter_grid_ = {
+        'l2_penalty': (1, 10),
+        'alpha': (0.001, 0.0001),
+        'max_iter': (1000, 2000)
+    }
+results_ = grid_search_cv(model,
+                          breast,
+                          hyperparameter_grid=parameter_grid_,
+                          cv=3)
+
+print(results_)
+#scores
+print(results_["scores"])
+# get the best score
+best_score = results_['best_score']
+print(f"Best score: {best_score}")
