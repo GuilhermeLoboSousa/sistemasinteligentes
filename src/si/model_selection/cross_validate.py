@@ -59,6 +59,52 @@ def k_fold_cross_validation(model, dataset: Dataset, scoring: callable = None, c
         scores.append(fold_score) #para o test
 
     return scores
+
+def leave_one_out_cross_validation(model, dataset: Dataset, scoring: callable = None, seed: int = None) -> List[float]:
+    """
+    Perform Leave-One-Out Cross-Validation (LOOCV) on the given model and dataset.
+
+    Parameters
+    ----------
+    model
+        The model to cross validate.
+    dataset: Dataset
+        The dataset to cross validate on.
+    scoring: Callable
+        The scoring function to use. If None, the model's score method will be used.
+    seed: int
+        The seed to use for the random number generator.
+
+    Returns
+    -------
+    scores: List[float]
+        The scores of the model for each data point.
+    """
+    num_samples = dataset.X.shape[0]
+    scores = []
+
+    # Create an array of indices to shuffle the data
+    if seed is not None:
+        np.random.seed(seed)
+    indices = np.arange(num_samples)
+    np.random.shuffle(indices)
+
+    for i in range(num_samples):
+        # Use data point i as the test set, and the rest as the training set
+        train_indices = np.delete(indices, i)
+        test_indices = [i]
+
+        dataset_train = Dataset(dataset.X[train_indices], dataset.y[train_indices])
+        dataset_test = Dataset(dataset.X[test_indices], dataset.y[test_indices])
+
+        # Fit the model on the training set and score it on the test set
+        model.fit(dataset_train)
+        fold_score = scoring(dataset_test.y, model.predict(dataset_test)) if scoring is not None else model.score(
+            dataset_test)
+        scores.append(fold_score)
+
+    return scores
+
 if __name__ == '__main__':
     # import dataset
     from src.si.data.dataset import Dataset
@@ -83,6 +129,14 @@ if __name__ == '__main__':
 
     # cross validate the model
     scores_ = k_fold_cross_validation(knn, dataset_, cv=5, seed=1)
+
+    # print the scores
+    print(scores_)
+    # print mean score and standard deviation
+    print(f'Mean score: {np.mean(scores_)} +/- {np.std(scores_)}')
+
+    # LOOCV
+    scores_ = leave_one_out_cross_validation(knn, dataset_, seed=1)
 
     # print the scores
     print(scores_)
