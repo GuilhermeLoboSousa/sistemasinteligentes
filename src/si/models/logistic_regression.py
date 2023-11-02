@@ -212,3 +212,6 @@ if __name__ == '__main__':
 
     plt.plot(list(model.cost_history.keys()), list(model.cost_history.values()))
     plt.show() #gráfico do historial dos valores do historico
+
+
+    
