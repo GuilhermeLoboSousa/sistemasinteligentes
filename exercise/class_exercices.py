@@ -21,6 +21,7 @@ from src.si.models.categorical_nb import CategoricalNB
 from src.si.models.knn_classifier import KNNClassifier
 from src.si.models.ridge_regression import RidgeRegression
 from src.si.models.logistic_regression import LogisticRegression
+from src.si.model_selection.cross_validate import k_fold_cross_validation
 
 
 
@@ -113,3 +114,12 @@ score = model.score(test_data)
 print(f"Score: {score}")
 cost = model.cost(test_data)
 print(f"Cost: {cost}")
+
+#exercicio ala 7 crossvalidation
+filename_breast = r"C:\Users\guilh\OneDrive\Documentos\GitHub\sistemasinteligentes\datasets\breast_bin\breast-bin.csv"
+breast=read_csv(filename_breast, sep=",",features=True,label=True)
+model = LogisticRegression()
+# cross validate the model
+scores_ = k_fold_cross_validation(model, breast, cv=5, seed=1)
+print(scores_)
+print(f'Mean score: {np.mean(scores_)} +/- {np.std(scores_)}')
