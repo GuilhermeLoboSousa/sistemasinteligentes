@@ -23,6 +23,7 @@ from src.si.models.ridge_regression import RidgeRegression
 from src.si.models.logistic_regression import LogisticRegression
 from src.si.model_selection.cross_validate import k_fold_cross_validation
 from src.si.model_selection.grid_search import grid_search_cv
+from src.si.model_selection.randomized_search_cv import randomized_search_cv
 
 
 filename = r"C:\Users\guilh\OneDrive\Documentos\GitHub\sistemasinteligentes\datasets\iris\iris.csv"
@@ -124,7 +125,7 @@ scores_ = k_fold_cross_validation(model, breast, cv=5, seed=1)
 print(scores_)
 print(f'Mean score: {np.mean(scores_)} +/- {np.std(scores_)}')
 
-#exercicio ala 7 grid
+#exercicio aula 7 grid
 filename_breast = r"C:\Users\guilh\OneDrive\Documentos\GitHub\sistemasinteligentes\datasets\breast_bin\breast-bin.csv"
 breast=read_csv(filename_breast, sep=",",features=True,label=True)
 model = LogisticRegression()
@@ -144,3 +145,28 @@ print(results_["scores"])
 # get the best score
 best_score = results_['best_score']
 print(f"Best score: {best_score}")
+
+#exercicio aula 7 random
+filename_breast = r"C:\Users\guilh\OneDrive\Documentos\GitHub\sistemasinteligentes\datasets\breast_bin\breast-bin.csv"
+breast=read_csv(filename_breast, sep=",",features=True,label=True)
+model = LogisticRegression()
+parameter_grid_ = {
+        'l2_penalty':np.linspace(1, 10, 10),
+        'alpha':  np.linspace(0.001, 0.0001, 100),
+        'max_iter': np.linspace(1000, 2000, 200)
+    }
+results_ = randomized_search_cv(model,
+                          breast,
+                          hyperparameter_grid=parameter_grid_,
+                          cv=3,
+                          n_iter=100)
+
+print(results_)
+#scores
+print(results_["scores"])
+# get the best score
+best_score = results_['best_score']
+print(f"Best score: {best_score}")
+#no exercicio da aula 7 do grid o numero maximo de combinações é 8 entao
+#cheguei a fazer com o  n_iter=8  para verificar se dava o mesmo resultado que em grid search e deu, o que oprova estar bem implementado
+#deu isto :{'l2_penalty': 1, 'alpha': 0.0001, 'max_iter': 1000}, 'best_score': 0.9683908045977011}

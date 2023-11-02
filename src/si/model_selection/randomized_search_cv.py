@@ -8,14 +8,11 @@ import numpy as np
 from src.si.data.dataset import Dataset
 from src.si.model_selection.cross_validate import k_fold_cross_validation
 
-
-def grid_search_cv(model,
-                   dataset: Dataset,
-                   hyperparameter_grid: Dict[str, Tuple],
-                   scoring: Callable = None,
-                   cv: int = 5) -> Dict[str, Any]:
+def randomized_search_cv (model,dataset:Dataset, hyperparameter_grid: Dict[str, Tuple],scoring: Callable = None,cv: int = 5,n_iter:int=None):
     """
-    Performs a grid search cross validation on a model.
+    Implements a parameter optimization strategy with cross validation using a number of random combinations selected from a distribution possible hyperparameters.
+    more efficient and useful in large dataset
+    makes n random combinations with the hyperparameters and may not give the optimal solution, but it gives a good combination in less time
 
     Parameters
     ----------
@@ -29,6 +26,8 @@ def grid_search_cv(model,
         The scoring function to use.
     cv: int
         The cross validation folds.
+    n_iter:int
+        number of hyperparameter random combinations to test
 
     Returns
     -------
@@ -36,25 +35,17 @@ def grid_search_cv(model,
         The results of the grid search cross validation. Includes the scores, hyperparameters,
         best hyperparameters and best score.
     """
-    # validate the parameter grid
     for parameter in hyperparameter_grid:
-        if not hasattr(model, parameter):
-            raise AttributeError(f"Model {model} does not have parameter {parameter}.")#verificar se tenhoo hiperparametro que quero analisar num determinado modelo, ou seja nao posso ter k para o modelo do nb
-
-    results = {'scores': [], 'hyperparameters': []} 
-
-    # for each combination
-    for combination in itertools.product(*hyperparameter_grid.values()):#permite fazer comninações entre parametros e respetivos valors
-#combination seria algo para 'l2_penalty', alpha e max_iter do genero (1,0.001,1000) (1,0.001,2000) etc
-        # parameter configuration
-        parameters = {}#conseguimos acompanhar os paramentro 
-
-        # set the parameters
-        for parameter, value in zip(hyperparameter_grid.keys(), combination):
-            #vou ficar com parameter-value, usando o exemplo de cima
-            #l2_penalty - 1,alpha-0.001, max_iter-1000 etc
-            setattr(model, parameter, value)#é o que permite definir estes novos atributos para o modelo em questão
-            parameters[parameter] = value #dicionnario que guarda aquilo que foi trabalhado
+            if not hasattr(model, parameter):
+                raise AttributeError(f"Model {model} does not have parameter {parameter}.")#verificar se tenhoo hiperparametro que quero analisar num determinado modelo, ou seja nao posso ter k para o modelo do nb
+            
+    results = {'scores': [], 'hyperparameters': []}
+    for x in range(n_iter):#apenas quero que fça n_iter combinações
+        parameters={}
+        for chave, valores in hyperparameter_grid.items():#estou a "separar" as chaves dos possiveis valores, para depois conseguir escolher random valores
+            valores_random=np.random.choice(valores)#escolher random os valores por cada chave ou seja teria por exemplo chave a valores 1,2,3 e estaria a escolher random 1 ou 2 ou 3
+            parameters[chave]=valores_random #guardava a escolha feita
+            setattr(model, chave, valores_random) #defenia as escolhas feita para serem argumentos da função
 
         # cross validate the model
         score = k_fold_cross_validation(model=model, dataset=dataset, scoring=scoring, cv=cv)
@@ -68,7 +59,6 @@ def grid_search_cv(model,
     results['best_hyperparameters'] = results['hyperparameters'][np.argmax(results['scores'])] #quero os hiperparametros que obtiveram maior score
     results['best_score'] = np.max(results['scores']) # e ja agora qual foi o valor desse score
     return results
-
 
 if __name__ == '__main__':
     # import dataset
@@ -99,10 +89,11 @@ if __name__ == '__main__':
     }
 
     # cross validate the model
-    results_ = grid_search_cv(knn,
+    results_ = randomized_search_cv(knn,
                               dataset_,
                               hyperparameter_grid=parameter_grid_,
-                              cv=3)
+                              cv=3,
+                              n_iter=8)
 
     # print the results
     print(results_)
@@ -114,3 +105,5 @@ if __name__ == '__main__':
     # get the best score
     best_score = results_['best_score']
     print(f"Best score: {best_score}")
+
+    #fiz com o mesmo numero de combinações que utilizei no gridsearch e ambos score andam perto do 0.5
