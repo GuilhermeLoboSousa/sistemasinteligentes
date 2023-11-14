@@ -7,6 +7,7 @@ import numpy as np
 from collections import Counter
 import random
 
-output_error = np.array([[0.8, 0.3, 0.1]])
-a=np.sum(output_error, axis=0, keepdims=True)
-print(a)
+input = np.array([[0.8, 0.3,0],[0.1, 0.9,0]])
+mask = np.random.binomial(1, 1 - 0.5, size=input.shape)
+
+print(input.shape[0])
