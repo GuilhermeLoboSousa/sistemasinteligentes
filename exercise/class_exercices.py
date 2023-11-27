@@ -170,3 +170,22 @@ print(f"Best score: {best_score}")
 #no exercicio da aula 7 do grid o numero maximo de combinações é 8 entao
 #cheguei a fazer com o  n_iter=8  para verificar se dava o mesmo resultado que em grid search e deu, o que oprova estar bem implementado
 #deu isto :{'l2_penalty': 1, 'alpha': 0.0001, 'max_iter': 1000}, 'best_score': 0.9683908045977011}
+
+#exercicio aula 10
+from src.si.data.dataset import Dataset
+from src.si.neural_networks.layers import Layer, DenseLayer
+from src.si.neural_networks.dropout import Dropout
+from src.si.neural_networks.activation import TanhActivation, Softmaxactivation
+from src.si.neural_networks.losses import MeanSquaredError, CategoricalCrossEntropy
+from src.si.metrics.mse import mse
+from src.si.metrics.accuracy import accuracy
+from src.io.csv_file import read_csv
+
+np.random.seed(42)
+X = np.random.randn(1000, 32)  # 1000 amostras, 32 características
+y = np.random.randint(2, size=(1000, 1))  # Rótulos binários (0 ou 1)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+net =NeuralNetwork(epochs=1000, batch_size=16, optimizer=SGD, learning_rate=0.01, verbose=True,
+                        loss=CategoricalCrossEntropy, metric=accuracy)

@@ -205,7 +205,7 @@ class NeuralNetwork:
         numpy.ndarray
             The predicted labels.
         """
-        return self._forward_propagation(dataset.X, training=False)
+        return self._forward_propagation(dataset.X, training=False)#já é pos treino
 
     def score(self, dataset: Dataset) -> float:
         """
@@ -222,22 +222,23 @@ class NeuralNetwork:
             The score of the neural network.
         """
         if self.metric is not None:
-            return self.metric(dataset.y, self.predict(dataset))
+            return self.metric(dataset.y, self.predict(dataset)) #consoante a metrica escolhida
         else:
             raise ValueError("No metric specified for the neural network.")
 
 
 if __name__ == '__main__':
-    from si.data.dataset import Dataset
-    from si.neural_networks.layers import Layer, DenseLayer, Dropout
-    from si.neural_networks.activation import TanhActivation, SoftmaxActivation
-    from si.neural_networks.losses import MeanSquaredError, CategoricalCrossEntropy
-    from si.metrics.mse import mse
-    from si.metrics.accuracy import accuracy
-    from si.io.csv_file import read_csv
+    from src.si.data.dataset import Dataset
+    from src.si.neural_networks.layers import Layer, DenseLayer
+    from src.si.neural_networks.dropout import Dropout
+    from src.si.neural_networks.activation import TanhActivation, Softmaxactivation
+    from src.si.neural_networks.losses import MeanSquaredError, CategoricalCrossEntropy
+    from src.si.metrics.mse import mse
+    from src.si.metrics.accuracy import accuracy
+    from src.io.csv_file import read_csv
 
     # training data
-    dataset = read_csv('../../../datasets/iris/iris.csv', sep=',', features=True, label=True)
+    dataset = read_csv(r"C:\Users\guilh\OneDrive\Documentos\GitHub\sistemasinteligentes\datasets\iris\iris.csv", sep=',', features=True, label=True)
     # convert labels to one-hot encoding
     new_y = np.zeros((dataset.y.shape[0], 3))
     for i, label in enumerate(dataset.y):
@@ -259,7 +260,7 @@ if __name__ == '__main__':
     net.add(DenseLayer(4))
     net.add(TanhActivation())
     net.add(DenseLayer(3))
-    net.add(SoftmaxActivation())
+    net.add(Softmaxactivation())
 
     # train
     net.fit(dataset)
