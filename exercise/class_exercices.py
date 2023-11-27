@@ -175,17 +175,57 @@ print(f"Best score: {best_score}")
 from src.si.data.dataset import Dataset
 from src.si.neural_networks.layers import Layer, DenseLayer
 from src.si.neural_networks.dropout import Dropout
-from src.si.neural_networks.activation import TanhActivation, Softmaxactivation
-from src.si.neural_networks.losses import MeanSquaredError, CategoricalCrossEntropy
+from src.si.neural_networks.neural_network import NeuralNetwork
+from src.si.neural_networks.optimizers import SGD
+from src.si.neural_networks.activation import ReLUActivation,SigmoidActivation
+from src.si.neural_networks.losses import MeanSquaredError, BinaryCrossEntropy
 from src.si.metrics.mse import mse
 from src.si.metrics.accuracy import accuracy
 from src.io.csv_file import read_csv
-
+#criar dataset
 np.random.seed(42)
-X = np.random.randn(1000, 32)  # 1000 amostras, 32 características
-y = np.random.randint(2, size=(1000, 1))  # Rótulos binários (0 ou 1)
+X = np.random.randn(160, 32)  # 160 amostras, 32 características
+y = np.random.randint(2, size=(160, 1))  #  binários (0 ou 1)
+dataset=Dataset(X=X,y=y)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+#dividir treino/teste
+train_dl,test_dl = train_test_split(dataset, test_size=0.3, random_state=42)
 
-net =NeuralNetwork(epochs=1000, batch_size=16, optimizer=SGD, learning_rate=0.01, verbose=True,
-                        loss=CategoricalCrossEntropy, metric=accuracy)
+#criar rede
+model_dl =NeuralNetwork(epochs=100, batch_size=16, optimizer=SGD, learning_rate=0.01, verbose=True, loss=BinaryCrossEntropy, metric=accuracy)
+n_features = X.shape[1]
+model_dl.add(DenseLayer(32, (n_features,)))
+model_dl.add(ReLUActivation())
+model_dl.add(DenseLayer(16))
+model_dl.add(ReLUActivation())
+model_dl.add(DenseLayer(1))
+model_dl.add(SigmoidActivation())
+
+#treinar rede
+model_dl.fit(train_dl)
+
+#testar~
+result_dl=model_dl.score(test_dl)
+print(f"Deep learning result:{result_dl}")
+
+#o que deveria dar
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Activation
+from tensorflow.keras.optimizers import SGD
+from sklearn.model_selection import train_test_split
+
+# Definir o modelo Keras
+model_keras = Sequential()
+model_keras.add(Dense(32, input_shape=(n_features,), activation='relu'))
+model_keras.add(Dense(16, activation='relu'))
+model_keras.add(Dense(1, activation='sigmoid'))
+
+model_keras.compile(optimizer=SGD(learning_rate=0.01), loss='binary_crossentropy', metrics=['accuracy'])
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Treinar o modelo
+history = model_keras.fit(X_train, y_train, epochs=100, batch_size=16, verbose=1, validation_data=(X_test, y_test))
+
+test_loss, test_accuracy = model_keras.evaluate(X_test, y_test)
+print(f'\nTest Loss: {test_loss:.4f}, Test Accuracy: {test_accuracy:.4f}')
