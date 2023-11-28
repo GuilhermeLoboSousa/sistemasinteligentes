@@ -35,6 +35,7 @@ for seq_ajust in sequence_trim_pad:
     for letra in seq_ajust:
         value_nodic=char_to_i.get(letra)
         vetor=matriz_identidade[value_nodic-1]
+        print(vetor)
         one_hot_encode.append(vetor)
 print(one_hot_encode)
 index=[]

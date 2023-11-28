@@ -64,7 +64,7 @@ class OneHotEncoder:
 
         #vi me obrigado a fazer isto porque cause do padling porque caso contrario nao teria esse caracter de pad no dicionario e dava erro
         if self.padder not in self.alphabet:
-            alfa = np.append(alfa, self.padder)
+            self.alphabet = np.append(self.alphabet, self.padder)
             max_index = max(self.char_to_index.values())
             new_index = max_index + 1
             self.char_to_index[self.padder] = new_index
@@ -95,6 +95,7 @@ class OneHotEncoder:
         #agora criar a encode onde no fim terei uma matriz para cada sequencia de max_length * alfabeto-o que faz sentido
         one_hot_encode=[]
         matriz_identidade=np.eye(len(self.alphabet))
+        print(matriz_identidade)
         #criar uma matriz identidade com o tamamho do meu alfabeto , ou seja [1,0,0][0,1,0],[0,0,1] isto para um exemlo de alfabeto com 3 letras/caracteres
         #ou seja fico com matriz quadrada onde as colunas sao o alfabeto (que é importante) e cada letra vai ter preenchido um 1
         for sequence_ajustada in sequence_trim_pad:#vai a cada sequencia que ja colcoada todas com o mesmo tamanho
@@ -145,8 +146,17 @@ class OneHotEncoder:
             texto="".join(total_sequences)#vamos ficar com uma string com todos os caracteres de todas as sequencias
         final=[]
         for i in range (0,len(texto),self.max_lenght):#vai agora analisar cada trecho de sequencia de cada vez
-            string=texto[i:i+4]
+            string=texto[i:i+self.max_lenght]
             corte_extra=string.rstrip(self.padder)#cortar aquilo que foi acrescentado para todas as seq ficarem com memso tamanho
             final.append(corte_extra)
         return final #decoded sequences
+#testar
+encoder = OneHotEncoder(padder="?", max_length=9)
+data = ["abc", "aabd"]
+encoded_data = encoder.fit_transform(data)
+print("One-Hot Encoding:")
+print(encoded_data)
+decoded_data = encoder.inverse_transform(encoded_data)
 
+print("\nDecoded Data:")
+print(decoded_data)
