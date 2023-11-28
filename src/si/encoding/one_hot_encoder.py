@@ -133,9 +133,20 @@ class OneHotEncoder:
         list[str]:
             Decoded sequences
         """
-        decoded_sequences = []
+        #vamos ficar com nos indices que têm valor 1 na matriz hot_encoding
+        index=[]
         for one_hot_matrix in data:
             indices = np.argmax(one_hot_matrix)
-            decoded_sequence = "".join([self.index_to_char[index+1] for index in indices])
-            decoded_sequences.append(decoded_sequence.rstrip(self.padder))  # Remover o padding se tiver interssa + "??"
-        return decoded_sequences
+            index.append(indices)
+        total_sequences=[]
+        for each_index in index:
+            letras=self.index_to_char.get(each_index+1)#mais um por ser python
+            total_sequences.append(letras)
+            texto="".join(total_sequences)#vamos ficar com uma string com todos os caracteres de todas as sequencias
+        final=[]
+        for i in range (0,len(texto),self.max_lenght):#vai agora analisar cada trecho de sequencia de cada vez
+            string=texto[i:i+4]
+            corte_extra=string.rstrip(self.padder)#cortar aquilo que foi acrescentado para todas as seq ficarem com memso tamanho
+            final.append(corte_extra)
+        return final #decoded sequences
+

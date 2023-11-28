@@ -41,11 +41,21 @@ index=[]
 for f in one_hot_encode:
     indices=np.argmax(f)
     index.append(indices)
+print(index)
 sequences=[]
-
-for a in range(0,len(index),4):
-    grupo=index[a:a+4]
-    for e in grupo:
-        final=i_to_char.get(e+1)
-        teste="".join(final)
-print(teste)
+for a in index:
+    letras=i_to_char.get(a+1)
+    sequences.append(letras)
+    texto="".join(sequences)
+final=[]
+for i in range(0,len(texto),4):
+    string=texto[i:i+4]
+    print(string)
+    esta=string.rstrip("?")
+    final.append(esta)
+print(final)
+    #grupo=index[a:a+4]
+    #for e in grupo:
+        #final=i_to_char.get(e+1)
+        #teste="".join(final)
+#print(teste)
