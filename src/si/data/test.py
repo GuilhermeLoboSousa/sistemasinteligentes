@@ -6,5 +6,7 @@ import numpy as np
 import numpy as np
 from collections import Counter
 import random
-y = np.random.randint(2, size=(1000, 1))  # Rótulos binários (0 ou 1)
-print(y)
+data = np.array([[[1, 2, 3], [4, 5, 6], [7, 8, 9]],
+                     [[1, 2, 3], [4, 5, 6], [7, 8, 9]]])
+for x in reversed(np.arange(max(0, 2), 1)):
+    print(x)
