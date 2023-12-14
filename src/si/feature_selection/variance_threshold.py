@@ -12,15 +12,25 @@ class VarianceThreshold:
 
     Parameters
     -------------
-    threshold-value used for the feature selection
+    threshold-florat
+        value used for the feature selection
+        Features with a training-set variance lower than this threshold will be removed.
 
     Estimated parameters
     ------------------
-    Variance: the varaince of each featue estimated from data
+    Variance: array-like, shape (n_features,)
+        the varaince of each featue estimated from data
     """
     def __init__(self, threshold:float=0.0):
         """
-        same logic explain before
+        Variance Threshold feature selection.
+        Features with a training-set variance lower than this threshold will be removed from the dataset.
+
+        Parameters
+        ----------
+        threshold: float
+            The threshold value to use for feature selection. Features with a
+            training-set variance lower than this threshold will be removed.
         """
         if threshold < 0:
             raise ValueError("the threshold must be a positive value")
@@ -34,15 +44,29 @@ class VarianceThreshold:
         """
         Fit the VaraianceThresold model according to the given data, basicly estimates the variance of each feature.
         This method is responsible for estimating parameters from the data (variance in this case)
-        Return itself
+        Parameters
+        ----------
+        dataset : Dataset
+            The dataset to fit.
+
+        Returns
+        -------
+        self : object
         """
-        self.variance=dataset.get_variance() #metodo criado na outra classe
-        return self #aqui nao percebi bem
+        self.variance=dataset.get_variance() #metodo criado na outra classe- diferente do prof
+        return self 
     
     def transform(self,dataset:Dataset) -> Dataset:
         """
         this method is responsible for transforming de data
         would remove all features whose variances does not meet the treshold
+        Parameters
+        ----------
+        dataset: Dataset
+
+        Returns
+        -------
+        dataset: Dataset
         """
         X=dataset.X
         features_rule=self.variance > self.threshold #vai dar true ou false para ssaber onde a condição é verdade
@@ -52,7 +76,14 @@ class VarianceThreshold:
     
     def fit_transform(self,dataset:Dataset) -> Dataset:
         """
-        runs fit to data and the transform it
+        Runs fit to data and the transform it
+        Parameters
+        ----------
+        dataset: Dataset
+
+        Returns
+        -------
+        dataset: Dataset
         """
         self.fit(dataset)
         return self.transform(dataset)

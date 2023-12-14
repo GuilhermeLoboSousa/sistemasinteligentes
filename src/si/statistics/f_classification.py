@@ -16,12 +16,15 @@ def f_classification(dataset:Dataset) -> Union[Tuple[np.ndarray,np.ndarray], Tup
 
     Parameters
     -------
-    dataset
+    dataset: Dataset
+        A labeled dataset
 
-    return
-    -----
-    F-score
-    p-score
+    Returns
+    -------
+    F: np.array, shape (n_features,)
+        F scores
+    p: np.array, shape (n_features,)
+        p-values
     """
 
     classes=dataset.get_classes() # vai me dar as classes unicas existentes no dataset (possiveis valores de label y)- função ja criada
@@ -30,13 +33,11 @@ def f_classification(dataset:Dataset) -> Union[Tuple[np.ndarray,np.ndarray], Tup
     return F,p
 
 
-#TESTAR
-
 #testing
 if __name__ == '__main__':
     from src.si.data.dataset import Dataset
 
-    dataset = Dataset(X=np.array([[3, 2, 0, 3],
+    dataset = Dataset(X=np.array([[0, 2, 0, 3],
                                   [0, 1, 4, 5],
                                   [0, 1, 1, 2]]),
                       y=np.array([0, 1, 0]),

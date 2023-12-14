@@ -19,64 +19,89 @@ class SelectKBest:
     
     Parameters
     -----------
-    score_func: taking the dataset and return a pair os array (F and p value)- allow analize the variance 
-    k: nuber of top features that we want
+    score_func: callable
+        taking the dataset and return a pair os array (F and p value)- allow analize the variance 
+    k: int, deafult=10
+        nuber of top features that we want
 
-    estimated parameters(given by the score_func)
+    Estimated parameters(given by the score_func)
     ---------------
-    F:
-    p:
+    F: array, shape (n_features,)
+        F scores of features.
+    P: array, shape (n_features,)
+        p-values of F-scores.
 
     """
 
     def __init__(self, score_func:Callable= f_classification, k:int =10) : #callable permite invocar uma função como objeto i guess
         """
-        same logic that before
-        
+        Select features according to the k highest scores.
+
+        Parameters
+        ----------
+        score_func: callable
+            Function taking dataset and returning a pair of arrays (scores, p_values)
+        k: int, default=10
+            Number of top features to select.
         """
         self.K=k
         self.score_func=score_func
         self.F=None
         self.p=None
-        if self.K > len(dataset.features):
-            raise ValueError(f"k ({self.K}) cannot be greater than the number of available features ({len(dataset.features)}).")
-        if np.isnan(dataset.X).any():
-            warnings.warn("Caution: The dataset contains NaN values which can lead to incorrect results when computing statistics.You must use some other metodos first like dropna or filna")
+        #if self.K > len(dataset.features): #seria engraçado acrecentar? ou nao vale a pena?
+            #raise ValueError(f"k ({self.K}) cannot be greater than the number of available features ({len(dataset.features)}).")
+        #if np.isnan(dataset.X).any():
+            #warnings.warn("Caution: The dataset contains NaN values which can lead to incorrect results when computing statistics.You must use some other metodos first like dropna or filna")
     
     def fit (self, dataset:Dataset) -> "SelectKBest":
         """
-        estimates the F and p values for each feature using the score_func
+        Estimates the F and p values for each feature using the score_func
 
         Parameters
-        -------
-        Dataset
+        ----------
+        dataset: Dataset
+            A labeled dataset
 
-        Return---
-        itself
+        Returns
+        -------
+        self: object
+            Returns self.
         """
 
         self.F,self.P=self.score_func(dataset) #vai chamar a função f_classification ja criada que da como return o tupple F e p
+        self.F = np.nan_to_num(self.F)
         return self
     
     def transform(self,dataset:Dataset) ->Dataset:
         """
         select the top k features accord the F-value
+        Parameters
+        ----------
+        dataset: Dataset
+            A labeled dataset
 
-        Returns:
-        the select (filtered) dataset
+        Returns
+        -------
+        dataset: Dataset
+            A labeled dataset with the k highest scoring features.
         """
         top_10=np.argsort(self.F)[-self.K:][::-1] # ordena os valores de F de forma CRESCENTE e seleciona os 10 ultimos neste caso, que sao os top_10
-        print(top_10,"score")
         features=np.array(dataset.features)[top_10] #apenas fico com as features do top 10
         return Dataset(X=dataset.X[:,top_10], y=dataset.y, features=features, label=dataset.label) #faço aqui a filtragem do dataset X-todas as linhas , mas apenas as 10 melhores colunas
     
     def fit_transform(self,dataset:Dataset): #basicamente este junta as duas funções
         """
-        Runs fit and thaen transform the dataaset by electing the k highest scoring features.
+        It fits SelectKBest and transforms the dataset by selecting the k highest scoring features.
 
-        return
-        ------
-        dataset already filtered with the k highest scoring features
+        Parameters
+        ----------
+        dataset: Dataset
+            A labeled dataset
+
+        Returns
+        -------
+        dataset: Dataset
+            A labeled dataset with the k highest scoring features.
         """
         self.fit(dataset)
         return self.transform(dataset)

@@ -6,14 +6,23 @@ from src.si.data.dataset import Dataset
 
 def read_csv (filename:str, sep:str=",", features:bool=None, label:bool=None )->Dataset:
     """
-    allow to read a csc file into a Dataset object
+    Allow to read a csc file into a Dataset object
     
     Arguments
     --------------
-    filename: the path tho the file
-    sep: separator used in the file (most comumn is , or ;) 
-    features: if the file has a header- default is false
-    label: if the file has a label y- default is false
+    filename:str 
+        the path tho the file
+    sep:str 
+        separator used in the file (most comumn is , or ;) 
+    features: bool,optional 
+        if the file has a header- default is false
+    label: bool, optional
+        if the file has a label y- default is false
+    
+    Returns
+    -------
+    Dataset
+        The dataset object
     """
     data=pd.read_csv(filename,sep=sep)
     if features and label:
@@ -43,14 +52,18 @@ def read_csv (filename:str, sep:str=",", features:bool=None, label:bool=None )->
 
 def write_csv (filename:str,dataset:Dataset, sep:str=",", features:bool=None, label:bool=None ):
     """
-    allow to transform Dataset object into a csv file
+    Allow to transform Dataset object into a csv file
     
     Arguments
     --------------
-    filename: the path tho the file
-    sep: separator used in the file (most comumn is , or ;) 
-    features: if the file has a header- default is false
-    label: if the file has a label y- default is false
+    filename:str 
+        the path tho the file
+    sep:str, optional
+      separator used in the file (most comumn is , or ;) 
+    features:bool,optional 
+        if the file has a header- default is false
+    label:bool,optional 
+        if the file has a label y- default is false
     """
     data=pd.DataFrame(dataset.X) # ir buscar a nossa matrix X como data
 
