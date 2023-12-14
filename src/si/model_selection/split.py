@@ -42,7 +42,7 @@ def train_test_split(dataset:Dataset,test_size:float=0.2,random_state:int=42) ->
 
 def stratified_train_test_split(dataset:Dataset,test_size:float=0.2,random_state:int=42) -> tuple[Dataset,Dataset]: #utilizado quando a proporção das classes nao é correta, ou seja garante que a proporção de cada classe é igual no dataset treino e test
     """
-    Divide the dataset into training and testing sets in a stratified manner.
+    Split the dataset into training and testing sets in a stratified manner.
 
     Parameters
     ----------

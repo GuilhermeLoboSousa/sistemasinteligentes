@@ -6,6 +6,7 @@ from src.si.statistics.euclidean_distance import euclidean_distance
 from src.si.metrics.accuracy import accuracy
 from typing import Callable,Union
 from src.si.model_selection.split import train_test_split
+from typing import Callable, Union, Literal
 
 
 
@@ -28,27 +29,28 @@ class KNNClassifier:
     dataset: np.ndarray
         The training data
     """
-    def __init__(self,k:int=1,distance:Callable=euclidean_distance):
+    def __init__(self, k: int = 1, weights: Literal['uniform', 'distance'] = 'uniform', distance: Callable = euclidean_distance):
         """
         Initialize the KNN classifier
 
         Parameters
         ----------
         k: int
-            The number of nearest neighbors to use.
-            When k is small, can lead to a very flexible and potentially noisy model. It might be sensitive to individual data points, resulting in overfitting.
-            A moderate k value often works well in practice. It provides a balance between capturing local patterns and reducing noise. 
-            With very large k values, the model may become too biased and fail to capture local patterns, leading to underfitting.
-
+            The number of nearest neighbors to use
+        weights: Literal['uniform', 'distance']
+            The weight function to use
         distance: Callable
             The distance function to use
         """
+        # parameters
+        self.k = k
+        self.weights = weights
+        self.distance = distance
 
-        self.k=k # numero de k-mais proximos exemplos a considera
-        self.distance=distance #função que vai calcular a distancia entre uma samples e as samples do dataset treino
-        self.train_dataset=None #meu dataset treino
+        # attributes
+        self.dataset = None
 
-    def fit (self,dataset:Dataset) -> "KNNClassifier":
+    def fit(self, dataset: Dataset) -> 'KNNClassifier':
         """
         It fits the model to the given dataset
 
@@ -62,19 +64,92 @@ class KNNClassifier:
         self: KNNClassifier
             The fitted model
         """
-        self.train_dataset=dataset # o input é o dataset de treino logo apenas fiz este passo
+        self.dataset = dataset
         return self
     
-    def _get_closest_label(self,sample:np.ndarray)->Union[int,str]:
+    def _get_weights(self, distances: np.ndarray) -> np.ndarray:
+        '''
+        It returns the weights of the k nearest neighbors
+
+        Parameters
+        ----------
+        distances: np.ndarray
+            The distances between the sample and the dataset
+
+        Returns
+        -------
+        weights: np.ndarray
+            The weights of the k nearest neighbors
+        '''
+        # get the k nearest neighbors (first k indexes of the sorted distances)
+        k_nearest_neighbors = np.argsort(distances)[:self.k]
+
+        # get the weights of the k nearest neighbors
+        weights = 1 / distances[k_nearest_neighbors]
+        return weights
+    
+    def _get_weighted_label(self, sample: np.ndarray) -> Union[int, str]:
         """
+        It returns the weighted label of the given sample
+
+        Parameters
+        ----------
+        sample: np.ndarray
+            The sample to get the weighted label of
+
+        Returns
+        -------
+        label: str or int
+            The weighted label
         """
-        distances=self.distance(sample,self.train_dataset.X) #calcular a distancia entre cada sample e o conjunto de sample no dataset de treino
-        k_nearest_neighbors=np.argsort(distances)[:self.k] #argsort coloca as distancias por ordem crescente, logo quero as primeiras k -vao ser as distancias mais perto
-        #k_nearest_neighbours cporresponde aos indices das samples com distancia mais proxima a sample de input
-        k_nearest_neighbors_labels=self.train_dataset.y[k_nearest_neighbors] #  descubro que classes em Y corresponde a esses indices de mais curta distancia
-        #ou seja vou ficar a saber quais classes da label y estao mais proximas
-        labels, counts = np.unique(k_nearest_neighbors_labels, return_counts=True) #permite contar quantas vezes aparece cada classe mais proxima identificada anteriormente do genero (classe 0,3) (classe 1,2) (classe 2,1)
-        return labels[np.argmax(counts)]#apenas quero a que aparece mais vezes , logo vou procurar o maximo
+        # compute the distance between the sample and the dataset
+        distances = self.distance(sample, self.dataset.X)
+
+        # get the weights of the k nearest neighbors
+        weights = self._get_weights(distances)
+
+        # get the k nearest neighbors
+        k_nearest_neighbors = np.argsort(distances)[:self.k]
+
+        # get the labels of the k nearest neighbors
+        k_nearest_neighbors_labels = self.dataset.y[k_nearest_neighbors]
+
+        # get the weighted label
+        if self.weights == 'uniform':
+            return np.bincount(k_nearest_neighbors_labels).argmax()
+        elif self.weights == 'distance':
+            return np.bincount(k_nearest_neighbors_labels, weights=weights).argmax()
+        
+    def _get_closest_label(self, sample: np.ndarray) -> Union[int, str]:
+        """
+        It returns the closest label of the given sample
+
+        Parameters
+        ----------
+        sample: np.ndarray
+            The sample to get the closest label of
+
+        Returns
+        -------
+        label: str or int
+            The closest label
+        """
+        if self.weights == 'distance':
+            return self._get_weighted_label(sample)
+        
+        else:
+            # compute the distance between the sample and the dataset
+            distances = self.distance(sample, self.dataset.X)
+
+            # get the k nearest neighbors
+            k_nearest_neighbors = np.argsort(distances)[:self.k]
+
+            # get the labels of the k nearest neighbors
+            k_nearest_neighbors_labels = self.dataset.y[k_nearest_neighbors]
+
+            # get the most common label
+            labels, counts = np.unique(k_nearest_neighbors_labels, return_counts=True)
+            return labels[np.argmax(counts)]
     
     def predict(self,dataset:Dataset) -> np.ndarray:
         """
@@ -112,23 +187,16 @@ class KNNClassifier:
         return accuracy(dataset.y,predictions) #comparar aquilo que foi obtido com o verdadeiro dataset
 
 if __name__ == '__main__':
-    num_samples = 600
-    num_features = 100
-    num_classes = 2
+    # import dataset
+    from src.si.data.dataset import Dataset
+    from src.si.model_selection.split import train_test_split
 
-    # random data
-    X = np.random.rand(num_samples, num_features)  
-    y = np.random.randint(0, num_classes, size=num_samples)  # classe aleatórios
-
-    dataset_ = Dataset(X=X, y=y)
-
-    #  features and class name
-    dataset_.features = ["feature_" + str(i) for i in range(num_features)]
-    dataset_.label = "class_label"
+    # load and split the dataset
+    dataset_ = Dataset.from_random(600, 100, 2)
     dataset_train, dataset_test = train_test_split(dataset_, test_size=0.2)
 
     # initialize the KNN classifier
-    knn = KNNClassifier(k=3)
+    knn = KNNClassifier(k=3, weights='distance')
 
     # fit the model to the train dataset
     knn.fit(dataset_train)
@@ -136,3 +204,4 @@ if __name__ == '__main__':
     # evaluate the model on the test dataset
     score = knn.score(dataset_test)
     print(f'The accuracy of the model is: {score}')
+
