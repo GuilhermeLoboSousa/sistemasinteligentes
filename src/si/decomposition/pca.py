@@ -7,8 +7,24 @@ import matplotlib.pyplot as plt
 
 
 class PCA:
-    """
-    """
+    '''
+    Performs Principal Component Analysis (PCA) on a dataset.
+    It groups the data into n components, where n is the number of components.
+
+    Parameters
+    ----------
+    n_components: int
+        Number of components.
+    
+    Attributes
+    ----------
+    components: np.ndarray
+        Components.
+    mean: np.ndarray
+        Mean.
+    explained_variance: np.ndarray
+        Explained variance.
+    '''
     def __init__(self,n_components:int) -> None:
         """
         PCA algorithm that is used to reduce the dimensions of the dataset. For example PC1=loading1*coluna1 + loading2`coluna 2 ***
@@ -38,7 +54,11 @@ class PCA:
         It fits the data and stores the mean values of each sample, the principial components and the explained variance.
         Parameters
         ----------
-        dataset (Dataset): Dataset object.
+        dataset: Dataset 
+            Dataset object.
+        Reteruns
+        ----------
+        it self
         """
         #1-centering the data
         if self.n_components > dataset.X.shape[1]-1:#acrescentei estes avisos , que vao de acordo à teoria
@@ -81,11 +101,11 @@ class PCA:
     
     def plot_variance_explained(self):
         """
-        Creates  a bar plot of the variances explained by the principal components.
+        Creates a bar plot of the variances explained by the principal components.
         """
         if self.explained_variance is not None:
             explained_variance_normalized = self.explained_variance / sum(self.explained_variance) #normalizar as variancias
-            #print(explained_variance_normalized)
+            print(explained_variance_normalized)
 
             num_pcs = len(self.explained_variance) #preparar para o eixo do X onde vao os pc1,2,etc
             x_indices = range(1, num_pcs + 1)
@@ -102,6 +122,7 @@ class PCA:
 #para acompar a parte teorica vi o video https://www.youtube.com/watch?v=FgakZw6K1QQ&t=10s
 
 if __name__ == "__main__":
+    from src.si.data.dataset import Dataset
     # dados
     dataset = Dataset(X=np.array([[10, 21, 33,67],
                                   [4, 15, 16,43],
@@ -113,11 +134,15 @@ if __name__ == "__main__":
 
     pca = PCA(n_components=3)
     transformed_data = pca.fit_transform(dataset)
-    print("Conjunto de Dados Transformado:")
-    print(transformed_data) #onde foi "projeto ao longo de pc1 -primeira colunca e ao longo de pc2-segunda coluna"
+    #print("Conjunto de Dados Transformado:")
+    #print(transformed_data) #onde foi "projeto ao longo de pc1 -primeira colunca e ao longo de pc2-segunda coluna"
     #como nao percebia muito do ouput obtido decidi adicionar o metodo para ver a representabilidade
     print(pca.plot_variance_explained())
 
+    from sklearn.decomposition import PCA as PCA_sklearn
+    pca_sklearn = PCA_sklearn(n_components=3)
+    pca_sklearn.fit_transform(dataset.X)
+    print(pca_sklearn.explained_variance_ratio_)
 
 
 

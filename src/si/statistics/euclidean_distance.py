@@ -12,11 +12,27 @@ def euclidean_distance(x:np.ndarray,y:np.ndarray)->np.ndarray:
 
     Parameters
     ------
-    x:point -point that we pretende to now the distance
-    y:set of points -different points that is differente clusters/centroids and off course that in the end we want the lower distance
+    x:np.ndarray
+        point -point that we pretende to now the distance
+    y:np.ndarray
+        set of points -different points that is differente clusters/centroids and off course that in the end we want the lower distance
 
     Returns
     -----
-    the eucledian distance for each point in y 
+    np.ndarray
+        the eucledian distance for each point in y 
     """
     return np.sqrt(((x-y)**2).sum(axis=1))#eixo 1 porque vamos obter uma matriz de 1 linhas por muitas colunas , mas apenas queremos somar as linhas
+
+
+if __name__ == '__main__':
+    # test euclidean_distance
+    x = np.array([1, 2, 3])
+    y = np.array([[1, 2, 3], [4, 5, 6]])
+    our_distance = euclidean_distance(x, y)
+    # using sklearn
+    # to test this snippet, you need to install sklearn (pip install -U scikit-learn)
+    from sklearn.metrics.pairwise import euclidean_distances
+    sklearn_distance = euclidean_distances(x.reshape(1, -1), y)
+    assert np.allclose(our_distance, sklearn_distance)
+    print(our_distance, sklearn_distance)
