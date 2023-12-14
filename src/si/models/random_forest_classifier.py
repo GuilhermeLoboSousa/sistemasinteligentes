@@ -154,11 +154,17 @@ if __name__ == '__main__':
 
     data = read_csv(filename, sep=",",features=True,label=True)
     train, test = train_test_split(data, test_size=0.33, random_state=42)
-    model = RandomForestClassifier(n_estimators=10000,max_features=4,min_sample_split=2, max_depth=5, mode='gini',seed=42)
+    model = RandomForestClassifier(n_estimators=10,min_sample_split=3, max_depth=3, mode='gini')
     model.fit(train)
     print(model.score(test))
 
-#esta feito falta de alguma forma comprovar se esta bem e fazer com 10000 ou 1000 da o mesmo
+    #sklearn random forest classifier
+    from sklearn.ensemble import RandomForestClassifier as SklearnRandomForestClassifier
     
+    model_comparation = SklearnRandomForestClassifier(n_estimators=10, min_samples_split=3, max_depth=3)
+    model_comparation.fit(train.X, train.y)
+    # print(model2.predict(test.X))
+    print(accuracy(test.y, model_comparation.predict(test.X)))
+
 
     

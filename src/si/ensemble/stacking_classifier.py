@@ -79,7 +79,6 @@ class StackingClassifier:#primeiro treinamos com o dataset original um numero de
             predictions.append(prever)
         
         predictions=np.array(predictions).T
-        print(predictions,"verificar array")
         y_pred_final=self.final_model.predict(Dataset(dataset.X, predictions)) #em vez de ser o tipico label y de 1 coluna por x linhas, vamos ter tambem n colunas por x linhas (isto estava a causar um pouco de confusao), mas é possivel            
         return y_pred_final
 

@@ -117,6 +117,8 @@ if __name__ == '__main__':
     from src.si.model_selection.split import train_test_split
     from src.si.models.knn_classifier import KNNClassifier
     from src.si.models.logistic_regression import LogisticRegression
+    from src.si.models.decision_tree_classifier import DecisionTreeClassifier
+
     num_samples = 600
     num_features = 100
     num_classes = 2
