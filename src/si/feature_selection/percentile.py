@@ -85,6 +85,7 @@ class Percentile:
             A labeled dataset with the highest scoring features within a specified percentile.
         """
         bottom_50=np.percentile(self.F,self.percentile) #nao preciso de ordenar primeiro os valores, para calcular o percentile a ordem nao importa(ja testei isso)
+        print(bottom_50)
         indices = np.where(self.F > bottom_50)[0] # indices vai dizer a posição dos valores de F que têm valor maior que o percentile, ou seja identifica os indices das colunas que devem ser escolhidas
         features=np.array(dataset.features)[self.F > bottom_50] #mesma logica mas para ir buscar o nome das mesmas
         return Dataset(X=dataset.X[:,indices], y=dataset.y, features=features, label=dataset.label) #dataseet.X aparece sem ordem particular, ou seja apenas apresenta as features que estao acima desse percentil
