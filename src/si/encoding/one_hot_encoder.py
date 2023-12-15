@@ -3,9 +3,9 @@ sys.path.append("C:\\Users\\guilh\\OneDrive\\Documentos\\GitHub\\sistemasintelig
 import numpy as np
 
 class OneHotEncoder:
-    """
- 
-    """
+    '''
+    One-hot encoder for sequences.
+    '''
 
     def __init__(self, padder:str,max_length:int=None):
         """
@@ -40,7 +40,8 @@ class OneHotEncoder:
             list of sequences to learn from
         Returns
         -------
-
+        OneHotEncoder
+            The fitted encoder.
         """
         #max_lenght não é fornecido
         if self.max_lenght is None:
