@@ -272,3 +272,4 @@ if __name__ == '__main__':
     print(out2[:3])
 
     print(net.score(dataset))
+    
