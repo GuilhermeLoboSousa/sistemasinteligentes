@@ -13,15 +13,24 @@ class Dropout(Layer):#conjunti de valores do neuronio temporaraiamente desligado
     A randomset of neurons is temporarily ignored (dropped out) during training, helping prevent overfitting by promoting robustness and generalization in the model.
     some neurons are off-this is some values of X are multiply by zero
     """
-    def __init__(self, probability: int):
+    def __init__(self, probability: float):
         """
         Initialize the dropout layer.
 
         Parameters
         ----------
-        probability: int
+        probability: float
             The dropout rate, between 0 and 1.
             probability to desconet some connections
+        Attributes
+        ----------
+        mask: numpy.ndarray
+            binomial mask that sets some inputs to 0 based on the probability
+        input: numpy.ndarray
+            the input to the layer
+        output: numpy.ndarray
+            the output of the layer
+
         
         """
         super().__init__() #nao percebo bem pq esta aqui- talvez pelos abstract
@@ -95,15 +104,16 @@ class Dropout(Layer):#conjunti de valores do neuronio temporaraiamente desligado
         """
         return 0 #nao há atualizações de pesos nem bias 
 
+if __name__ == "__main__":
 
-dropout_layer = Dropout(probability=0.5)
+    dropout_layer = Dropout(probability=0.5)
 
-input_data = np.random.rand(3, 4)  # Assuming 3 samples with 4 features each
+    input_data = np.random.rand(3, 4)  # Assuming 3 samples with 4 features each
 
-output_data = dropout_layer.forward_propagation(input_data, training=True)
-print("Forward Propagation (Training):\n", output_data)
+    output_data = dropout_layer.forward_propagation(input_data, training=True)
+    print("Forward Propagation (Training):\n", output_data)
 
-output_error = np.random.rand(*output_data.shape)
+    output_error = np.random.rand(*output_data.shape)
 
-backward_output_error = dropout_layer.backward_propagation(output_error)
-print("\nBackward Propagation:\n", backward_output_error)
+    backward_output_error = dropout_layer.backward_propagation(output_error)
+    print("\nBackward Propagation:\n", backward_output_error)

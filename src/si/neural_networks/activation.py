@@ -204,13 +204,14 @@ class Softmaxactivation(ActivationLayer):
         numpy.ndarray
             The output of the layer.
         """
-        shifted_input = input - np.max(input, axis=0, keepdims=True)#vou ter de ver o max do x por cada coluna do input e tirar ao input esse valor
+        shifted_input = input - np.max(input, axis=-1, keepdims=True)#vou ter de ver o max do x por cada coluna do input e tirar ao input esse valor
         #fico com um novo input penso que seja para evitar altos valores exponenciais 
         # Compute the exponentials of the shifted input
+        #pode estar mal -atenção
         exp_input = np.exp(shifted_input)
 
         # Compute the softmax output
-        softmax_output = exp_input / np.sum(exp_input, axis=0, keepdims=True) #formula
+        softmax_output = exp_input / np.sum(exp_input, axis=-1, keepdims=True) #formula
 
         return softmax_output
 
@@ -269,3 +270,42 @@ class TanhActivation(ActivationLayer):
         """
         tanh_output = self.activation_function(input)
         return 1 - (tanh_output ** 2)
+
+if __name__ == '__main__':
+    input_data = np.array([[1.0, -2.0, 3.0]])
+
+    sigmoid_activation = SigmoidActivation()
+    sigmoid_output = sigmoid_activation.forward_propagation(input_data, training=True)
+    sigmoid_derivative = sigmoid_activation.derivative(input_data)
+
+    print("Sigmoid Activation Output:")
+    print(sigmoid_output)
+    print("Sigmoid Activation Derivative:")
+    print(sigmoid_derivative)
+
+    relu_activation = ReLUActivation()
+    relu_output = relu_activation.forward_propagation(input_data, training=True)
+    relu_derivative = relu_activation.derivative(input_data)
+
+    print("\nReLU Activation Output:")
+    print(relu_output)
+    print("ReLU Activation Derivative:")
+    print(relu_derivative)
+
+    softmax_activation =Softmaxactivation()
+    softmax_output = softmax_activation.forward_propagation(input_data, training=True)
+    softmax_derivative = softmax_activation.derivative(input_data)
+
+    print("\nSoftmax Activation Output:")
+    print(softmax_output)
+    print("Softmax Activation Derivative:")
+    print(softmax_derivative)
+
+    tanh_activation = TanhActivation()
+    tanh_output = tanh_activation.forward_propagation(input_data, training=True)
+    tanh_derivative = tanh_activation.derivative(input_data)
+
+    print("\nTanh Activation Output:")
+    print(tanh_output)
+    print("Tanh Activation Derivative:")
+    print(tanh_derivative)

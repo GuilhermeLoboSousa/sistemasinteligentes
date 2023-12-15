@@ -180,5 +180,31 @@ class CategoricalCrossEntropy(LossFunction):#multiclass
         """
         # Avoid division by zero
         p = np.clip(y_pred, 1e-15, 1 - 1e-15)
-        return - (y_true / p) 
+        return - (y_true / p)
+
+if __name__ == '__main__':
+
+    y_true = np.array([[1, 0], [0, 1], [1, 0]])
+    y_pred = np.array([[0.9, 0.1], [0.3, 0.7], [0.8, 0.2]])
+
+    mse_loss = MeanSquaredError()
+    mse_result = mse_loss.loss(y_true, y_pred)
+    mse_derivative = mse_loss.derivative(y_true, y_pred)
+
+    print(f"Mean Squared Error Loss: {mse_result}")
+    print(f"Mean Squared Error Derivative: {mse_derivative}")
+
+    bce_loss = BinaryCrossEntropy()
+    bce_result = bce_loss.loss(y_true, y_pred)
+    bce_derivative = bce_loss.derivative(y_true, y_pred)
+
+    print(f"Binary Cross Entropy Loss: {bce_result}")
+    print(f"Binary Cross Entropy Derivative: {bce_derivative}")
+
+    cce_loss = CategoricalCrossEntropy()
+    cce_result = cce_loss.loss(y_true, y_pred)
+    cce_derivative = cce_loss.derivative(y_true, y_pred)
+
+    print(f"Categorical Cross Entropy Loss: {cce_result}")
+    print(f"Categorical Cross Entropy Derivative: {cce_derivative}") 
        

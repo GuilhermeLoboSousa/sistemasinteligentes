@@ -127,3 +127,17 @@ class Adam(Optimizer):
         
         return w 
         
+if __name__ == '__main__':
+    w = np.array([2.0, 1.0])
+    grad_loss_w = np.array([1.0, -2.0])
+
+    learning_rates = [0.01, 0.03, 0.05]
+    for lr in learning_rates:
+        sgd_optimizer = SGD(learning_rate=lr)
+        adam_optimizer = Adam(learning_rate=lr)
+
+        updated_w_sgd = sgd_optimizer.update(w, grad_loss_w)
+        updated_w_adam = adam_optimizer.update(w, grad_loss_w)
+
+        print(f"Updated Weights (SGD, LR={lr}):", updated_w_sgd)
+        print(f"Updated Weights (Adam, LR={lr}):", updated_w_adam)
