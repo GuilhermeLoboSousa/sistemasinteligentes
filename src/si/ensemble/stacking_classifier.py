@@ -64,7 +64,7 @@ class StackingClassifier:#primeiro treinamos com o dataset original um numero de
         predictions=np.array(predictions).T #tive de transformar em np array pq estava a dar erro
         self.final_model.fit(Dataset(dataset.X, predictions)) #faz um fit em bloco digamos assim datasetx LABEL MODELO 1, DATASETX LABEL MODELO 3 ,ETC
         return self
-    
+    #mudar cenas
     def predict(self, dataset: Dataset) -> np.array:
         """Collects the predictions of all the models and computes the final prediction of the final model returning it.
         Args:
